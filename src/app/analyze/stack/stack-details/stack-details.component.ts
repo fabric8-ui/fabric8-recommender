@@ -68,7 +68,7 @@ export class StackDetailsComponent implements OnInit {
 
   private recommendations: Array<any> = [];
 
-  private dependencyItem: Array<any> = [];
+  private dependencies: Array<any> = [];
 
   private stackOverviewData: any = {};
 
@@ -203,7 +203,7 @@ export class StackDetailsComponent implements OnInit {
       CVEdata: ['CVE-2014-0001', 'CVE-2014-12345', 'CVE-2013-78934']
     };
 
-    this.dependencyItem = [{
+this.dependencyItem = [{
       name: 'v1.vmnei.somename',
       curVersion: '1.0',
       latestVersion: '3.1',
@@ -380,6 +380,10 @@ export class StackDetailsComponent implements OnInit {
     }
   }
 
+  private setDependencies(components: Array<any>): void {
+    this.dependencies = components;
+  }
+
   /* Get Recommendation */
   private getRecommendations(components: any, recommendation: any): void {
     this.similarStacks = recommendation.similar_stacks;
@@ -390,6 +394,10 @@ export class StackDetailsComponent implements OnInit {
 
     // Call the recommendations with the missing packages and version mismatches
     this.setRecommendations(missingPackages, versionMismatch);
+
+    // Call the stack-components with the components information so that
+    // It can parse the necessary information and show relevant things.
+    this.setDependencies(components);
 
     const url: string = this.similarStacks[0].uri;
     this.recoArray[this.currentIndex]['rows'] = [];
@@ -439,29 +447,6 @@ export class StackDetailsComponent implements OnInit {
         });
       }
     }
-  }
-
-  // TODO: To be removed after the demo
-  private fetchStaticRecommendation(): any {
-    return {
-      'recommendations': {
-        'similar_stacks': [
-          {
-            'analysis': {
-              'version_mismatch': {
-                'vertx:vertx-web-templ-freemarker': '3.3.4',
-                'vertx:vertx-web-templ-mvel': '3.4.0'
-              },
-              'missing_packages': {
-                'vertx:vertx-mongo-embedded-db': '3.3.3'
-              }
-            },
-            'similarity': 0.7009090909090909,
-            'uri': 'http://cucos-01.lab.eng.brq.redhat.com:32100/api/v1.0/appstack/18'
-          }
-        ]
-      }
-    };
   }
 
   private setComponentsToGrid(stackData: any): void {
@@ -536,25 +521,15 @@ export class StackDetailsComponent implements OnInit {
       .subscribe(data => {
         if (data && Object.keys(data).length !== 0) {
           stackAnalysesData = data;
-          if (Object.prototype.toString.call(stackAnalysesData) !== '[object Array]') {
-            stackAnalysesData = stackAnalysesData.result[0];
-          } else {
-            stackAnalysesData = stackAnalysesData[0];
-          }
+          let result: any = stackAnalysesData.result[0];
+          let components: Array<any> = result.components;
+          let recommendations: Array<any> = stackAnalysesData.recommendation.recommendations;
 
-          if (!stackAnalysesData.recommendation) {
-            // Add static recommendations here in case recommendations are not fetched
-            // from the API
-            // Solely for Demo purpose and to be removed later.
-            stackAnalysesData['recommendation'] = this.fetchStaticRecommendation();
-          }
+          this.getRecommendations(components, recommendations);
 
-          this.getRecommendations(stackAnalysesData.components,
-            stackAnalysesData.recommendation.recommendations);
-
-          this.getComponents(stackAnalysesData.components);
-          this.setStackMetrics(stackAnalysesData);
-          this.setComponentsToGrid(stackAnalysesData);
+          this.getComponents(components);
+          this.setStackMetrics(result);
+          this.setComponentsToGrid(result);
         } else {
           this.errorMessage.message = `This could take a while. Return to pipeline to keep
            working or stay on this screen to review progress.`;
