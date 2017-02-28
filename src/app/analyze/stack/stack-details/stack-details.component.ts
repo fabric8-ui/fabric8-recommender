@@ -68,7 +68,7 @@ export class StackDetailsComponent implements OnInit {
 
   private recommendations: Array<any> = [];
 
-  private dependencyItem: Array<any> = [];
+  private dependencies: Array<any> = [];
 
 
   constructor(
@@ -188,40 +188,6 @@ export class StackDetailsComponent implements OnInit {
         ]
       }
     ];
-
-    this.dependencyItem = [{
-      name: 'v1.vmnei.somename',
-      curVersion: '1.0',
-      latestVersion: '3.1',
-      dateAdded: '10/17/15',
-      pubPopularity: '500',
-      enterpriseUsage: '1/7',
-      teamUsage: '1/3'
-    }, {
-      name: 'v1.vmnei.anothername',
-      curVersion: '2.0',
-      latestVersion: '3.1',
-      dateAdded: '10/17/15',
-      pubPopularity: '500',
-      enterpriseUsage: '2/7',
-      teamUsage: '1/3'
-    }, {
-      name: 'v1.vmnei.differentname',
-      curVersion: '3.0',
-      latestVersion: '3.1',
-      dateAdded: '10/17/15',
-      pubPopularity: '500',
-      enterpriseUsage: '3/7',
-      teamUsage: '1/3'
-    }, {
-      name: 'v1.vmnei.notatallaname',
-      curVersion: '4.0',
-      latestVersion: '3.1',
-      dateAdded: '10/17/15',
-      pubPopularity: '500',
-      enterpriseUsage: '4/7',
-      teamUsage: '1/3'
-    }];
 
     // initialize to page 1
     // this.setPage(1);
@@ -366,6 +332,10 @@ export class StackDetailsComponent implements OnInit {
     }
   }
 
+  private setDependencies(components: Array<any>): void {
+    this.dependencies = components;
+  }
+
   /* Get Recommendation */
   private getRecommendations(components: any, recommendation: any): void {
     this.similarStacks = recommendation.similar_stacks;
@@ -376,6 +346,10 @@ export class StackDetailsComponent implements OnInit {
 
     // Call the recommendations with the missing packages and version mismatches
     this.setRecommendations(missingPackages, versionMismatch);
+
+    // Call the stack-components with the components information so that
+    // It can parse the necessary information and show relevant things.
+    this.setDependencies(components);
 
     const url: string = this.similarStacks[0].uri;
     this.recoArray[this.currentIndex]['rows'] = [];

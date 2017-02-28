@@ -1,11 +1,16 @@
-import { Component, Input } from '@angular/core';
+import {
+    Component,
+    Input,
+    OnChanges,
+    OnInit
+} from '@angular/core';
 
 @Component({
     selector: 'f8-stack-components',
     templateUrl: './stack-components.html',
     styleUrls: ['./stack-components.scss']
 })
-export class StackComponents {
+export class StackComponents implements OnChanges, OnInit {
 
     @Input() dependencies;
     private dependenciesList: Array<any> = [];
@@ -56,7 +61,19 @@ export class StackComponents {
         };
     }
 
+    ngOnChanges() {
+        if (this.dependencies) {
+            this.handleDependencies(this.dependencies);
+        }
+    }
+
     ngOnInit() {
+        if (this.dependencies) {
+            this.handleDependencies(this.dependencies);
+        }
+    }
+
+    private handleDependencies(dependencies: Array<any>): void {
         if (this.dependencies) {
             let length: number = this.dependencies.length;
             let dependency: any, eachOne: any;
@@ -92,12 +109,12 @@ export class StackComponents {
                 dependency = {};
                 eachOne = this.dependencies[i];
                 dependency[this.keys['name']] = eachOne['name'];
-                dependency[this.keys['currentVersion']] = eachOne['curVersion'];
-                dependency[this.keys['latestVersion']] = eachOne['latestVersion'];
-                dependency[this.keys['dateAdded']] = eachOne['dateAdded'];
-                dependency[this.keys['publicPopularity']] = eachOne['pubPopularity'];
-                dependency[this.keys['enterpriseUsage']] = eachOne['enterpriseUsage'];
-                dependency[this.keys['teamUsage']] = eachOne['teamUsage'];
+                dependency[this.keys['currentVersion']] = eachOne['version'];
+                dependency[this.keys['latestVersion']] = eachOne['latest_version'] || 'NA';
+                dependency[this.keys['dateAdded']] = eachOne['dateAdded'] || 'NA';
+                dependency[this.keys['publicPopularity']] = eachOne['github_details']['stargazers_count'] || 'NA';
+                dependency[this.keys['enterpriseUsage']] = eachOne['enterpriseUsage'] || 'Na';
+                dependency[this.keys['teamUsage']] = eachOne['teamUsage'] || 'NA';
 
                 this.dependenciesList.push(dependency);
             }
