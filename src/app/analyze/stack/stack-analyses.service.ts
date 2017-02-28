@@ -32,7 +32,7 @@ export class StackAnalysesService {
 
   private extractData(res: Response) {
     let body = res.json();
-    return body.result || {};
+    return body || {};
   }
 
   private handleError(error: Response | any) {
