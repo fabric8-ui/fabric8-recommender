@@ -11,10 +11,24 @@ export class OverviewComponent {
         this.dependenciesChart = {
             data: {
                 columns: [
-                    ['data1', 30],
-                    ['data2', 120]
+                    ['internal', 11],
+                    ['external', 21]
                 ],
-                type : 'donut'
+                type: 'donut'
+            },
+            chartOptions: {
+                donut: {
+                    width: 50,
+                    title: '32 Dependencies'
+                },
+                color: {
+                    pattern: ['#696969', '#A9A9A9']
+                }
+            },
+            configs: {
+                legend: {
+                    position: 'right'
+                }
             }
         };
     }
