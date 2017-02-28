@@ -203,7 +203,7 @@ export class StackDetailsComponent implements OnInit {
       CVEdata: ['CVE-2014-0001', 'CVE-2014-12345', 'CVE-2013-78934']
     };
 
-this.dependencies = [{
+    this.dependencies = [{
       name: 'v1.vmnei.somename',
       curVersion: '1.0',
       latestVersion: '3.1',
