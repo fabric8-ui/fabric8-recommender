@@ -70,6 +70,8 @@ export class StackDetailsComponent implements OnInit {
 
   private dependencies: Array<any> = [];
 
+  private stackOverviewData: any = {};
+
 
   constructor(
     public fb: FormBuilder,
@@ -84,6 +86,122 @@ export class StackDetailsComponent implements OnInit {
   ngOnInit() {
     this.getStackAnalyses(this.stack.uuid);
     this.setStackAnalysisRawData();
+
+    this.recommendations = [
+      {
+        suggestion: 'Recommended1',
+        action: 'Upgrade',
+        message: 'Vertx Web applications have different version',
+        pop: [
+          {
+            itemName: 'Create WorkItem',
+            identifier: 'CREATE_WORK_ITEM'
+          }, {
+            itemName: 'Dismiss Recommendation',
+            identifier: 'DISMISS'
+          }, {
+            itemName: 'Restore Recommendation',
+            identifier: 'RESTORE'
+          }
+        ]
+      },
+      {
+        suggestion: 'Recommended2',
+        action: 'Downgrade',
+        message: 'Vertx Web applications have different version',
+        pop: [
+          {
+            itemName: 'Create WorkItem',
+            identifier: 'CREATE_WORK_ITEM'
+          }, {
+            itemName: 'Dismiss Recommendation',
+            identifier: 'DISMISS'
+          }, {
+            itemName: 'Restore Recommendation',
+            identifier: 'RESTORE'
+          }
+        ]
+      },
+      {
+        suggestion: 'Recommended3',
+        action: 'Remove',
+        message: 'Vertx Web applications have different version',
+        pop: [
+          {
+            itemName: 'Create WorkItem',
+            identifier: 'CREATE_WORK_ITEM'
+          }, {
+            itemName: 'Dismiss Recommendation',
+            identifier: 'DISMISS'
+          }, {
+            itemName: 'Restore Recommendation',
+            identifier: 'RESTORE'
+          }
+        ]
+      }, {
+        suggestion: 'Recommended4',
+        action: 'Upgrade',
+        message: 'Vertx Web applications have different version',
+        pop: [
+          {
+            itemName: 'Create WorkItem',
+            identifier: 'CREATE_WORK_ITEM'
+          }, {
+            itemName: 'Dismiss Recommendation',
+            identifier: 'DISMISS'
+          }, {
+            itemName: 'Restore Recommendation',
+            identifier: 'RESTORE'
+          }
+        ]
+      },
+      {
+        suggestion: 'Recommended5',
+        action: 'Downgrade',
+        message: 'Vertx Web applications have different version',
+        pop: [
+          {
+            itemName: 'Create WorkItem',
+            identifier: 'CREATE_WORK_ITEM'
+          }, {
+            itemName: 'Dismiss Recommendation',
+            identifier: 'DISMISS'
+          }, {
+            itemName: 'Restore Recommendation',
+            identifier: 'RESTORE'
+          }
+        ]
+      },
+      {
+        suggestion: 'Recommended6',
+        action: 'Remove',
+        message: 'Vertx Web applications have different version',
+        pop: [
+          {
+            itemName: 'Create WorkItem',
+            identifier: 'CREATE_WORK_ITEM'
+          }, {
+            itemName: 'Dismiss Recommendation',
+            identifier: 'DISMISS'
+          }, {
+            itemName: 'Restore Recommendation',
+            identifier: 'RESTORE'
+          }
+        ]
+      }
+    ];
+
+    this.stackOverviewData = {
+      dependencyChart: [
+        ['internal', 11],
+        ['external', 21]
+      ],
+      compUsageChart: [
+        ['in teams', 2],
+        ['in organizations', 3]
+      ],
+      CVEdata: ['CVE-2014-0001', 'CVE-2014-12345', 'CVE-2013-78934']
+    };
 
 this.dependencyItem = [{
       name: 'v1.vmnei.somename',
@@ -478,15 +596,15 @@ this.dependencyItem = [{
     this.pagedItems = this.recommendations.slice(this.pager.startIndex, this.pager.endIndex + 1);
   }
 
-   private showStackModal(event): void {
+  private showStackModal(event): void {
     this.modalStackModule.open();
     //TODO : below hack needs to be removed
     // This hack was introduced as c3's chart was not properly rendered on load 
     // but on triggering some random changes works fine
 
-        setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 100);
-   }
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100);
+  }
 
 }
