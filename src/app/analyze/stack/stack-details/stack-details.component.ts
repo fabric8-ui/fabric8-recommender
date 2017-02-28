@@ -70,6 +70,8 @@ export class StackDetailsComponent implements OnInit {
 
   private dependencyItem: Array<any> = [];
 
+  private stackOverviewData: any = {};
+
 
   constructor(
     public fb: FormBuilder,
@@ -188,6 +190,18 @@ export class StackDetailsComponent implements OnInit {
         ]
       }
     ];
+
+    this.stackOverviewData = {
+      dependencyChart: [
+        ['internal', 11],
+        ['external', 21]
+      ],
+      compUsageChart: [
+        ['in teams', 2],
+        ['in organizations', 3]
+      ],
+      CVEdata: ['CVE-2014-0001', 'CVE-2014-12345', 'CVE-2013-78934']
+    };
 
     this.dependencyItem = [{
       name: 'v1.vmnei.somename',
@@ -607,15 +621,15 @@ export class StackDetailsComponent implements OnInit {
     this.pagedItems = this.recommendations.slice(this.pager.startIndex, this.pager.endIndex + 1);
   }
 
-   private showStackModal(event): void {
+  private showStackModal(event): void {
     this.modalStackModule.open();
     //TODO : below hack needs to be removed
     // This hack was introduced as c3's chart was not properly rendered on load 
     // but on triggering some random changes works fine
 
-        setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 100);
-   }
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100);
+  }
 
 }
