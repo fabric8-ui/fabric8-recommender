@@ -112,8 +112,9 @@ export class StackComponents implements OnChanges, OnInit {
                 dependency[this.keys['currentVersion']] = eachOne['version'];
                 dependency[this.keys['latestVersion']] = eachOne['latest_version'] || 'NA';
                 dependency[this.keys['dateAdded']] = eachOne['dateAdded'] || 'NA';
-                dependency[this.keys['publicPopularity']] = eachOne['github_details']['stargazers_count'] || 'NA';
-                dependency[this.keys['enterpriseUsage']] = eachOne['enterpriseUsage'] || 'Na';
+                dependency[this.keys['publicPopularity']] =
+                  eachOne['github_details'] ? eachOne['github_details'].stargazers_count : 'NA';
+                dependency[this.keys['enterpriseUsage']] = eachOne['enterpriseUsage'] || 'NA';
                 dependency[this.keys['teamUsage']] = eachOne['teamUsage'] || 'NA';
 
                 this.dependenciesList.push(dependency);

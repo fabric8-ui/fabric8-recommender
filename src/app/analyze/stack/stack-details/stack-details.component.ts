@@ -462,8 +462,10 @@ export class StackDetailsComponent implements OnInit {
       myObj.relativePublicUsage = components[i].relative_usage;
       myObj.popularity = '';
       if (components[i].github_details.forks_count) {
-        myObj.popularity = components[i].github_details.forks_count
-          + '/'
+        myObj.popularity = components[i].github_details.forks_count;
+      }
+      if (components[i].github_details.stargazers_count) {
+        myObj.popularity += '/'
           + components[i].github_details.stargazers_count;
       }
 
