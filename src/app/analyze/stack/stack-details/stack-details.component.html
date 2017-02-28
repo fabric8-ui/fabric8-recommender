@@ -99,7 +99,7 @@
             </div>
           </div> -->
           <div>
-            <f8-stack-components [dependencies]="dependencyItem"></f8-stack-components>
+            <f8-stack-components [dependencies]="dependencies && dependencies"></f8-stack-components>
           </div>
         </div>
         <div class="error-msg blank-slate-pf" [hidden]="!errorMessage.message">

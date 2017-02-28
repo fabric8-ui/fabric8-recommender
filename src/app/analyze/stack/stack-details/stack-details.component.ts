@@ -68,7 +68,7 @@ export class StackDetailsComponent implements OnInit {
 
   private recommendations: Array<any> = [];
 
-  private dependencyItem: Array<any> = [];
+  private dependencies: Array<any> = [];
 
 
   constructor(
@@ -85,7 +85,7 @@ export class StackDetailsComponent implements OnInit {
     this.getStackAnalyses(this.stack.uuid);
     this.setStackAnalysisRawData();
 
-    this.dependencyItem = [{
+this.dependencyItem = [{
       name: 'v1.vmnei.somename',
       curVersion: '1.0',
       latestVersion: '3.1',
@@ -262,6 +262,10 @@ export class StackDetailsComponent implements OnInit {
     }
   }
 
+  private setDependencies(components: Array<any>): void {
+    this.dependencies = components;
+  }
+
   /* Get Recommendation */
   private getRecommendations(components: any, recommendation: any): void {
     this.similarStacks = recommendation.similar_stacks;
@@ -272,6 +276,10 @@ export class StackDetailsComponent implements OnInit {
 
     // Call the recommendations with the missing packages and version mismatches
     this.setRecommendations(missingPackages, versionMismatch);
+
+    // Call the stack-components with the components information so that
+    // It can parse the necessary information and show relevant things.
+    this.setDependencies(components);
 
     const url: string = this.similarStacks[0].uri;
     this.recoArray[this.currentIndex]['rows'] = [];
