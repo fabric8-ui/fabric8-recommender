@@ -85,110 +85,6 @@ export class StackDetailsComponent implements OnInit {
     this.getStackAnalyses(this.stack.uuid);
     this.setStackAnalysisRawData();
 
-    this.recommendations = [
-      {
-        suggestion: 'Recommended1',
-        action: 'Upgrade',
-        message: 'Vertx Web applications have different version',
-        pop: [
-          {
-            itemName: 'Create WorkItem',
-            identifier: 'CREATE_WORK_ITEM'
-          }, {
-            itemName: 'Dismiss Recommendation',
-            identifier: 'DISMISS'
-          }, {
-            itemName: 'Restore Recommendation',
-            identifier: 'RESTORE'
-          }
-        ]
-      },
-      {
-        suggestion: 'Recommended2',
-        action: 'Downgrade',
-        message: 'Vertx Web applications have different version',
-        pop: [
-          {
-            itemName: 'Create WorkItem',
-            identifier: 'CREATE_WORK_ITEM'
-          }, {
-            itemName: 'Dismiss Recommendation',
-            identifier: 'DISMISS'
-          }, {
-            itemName: 'Restore Recommendation',
-            identifier: 'RESTORE'
-          }
-        ]
-      },
-      {
-        suggestion: 'Recommended3',
-        action: 'Remove',
-        message: 'Vertx Web applications have different version',
-        pop: [
-          {
-            itemName: 'Create WorkItem',
-            identifier: 'CREATE_WORK_ITEM'
-          }, {
-            itemName: 'Dismiss Recommendation',
-            identifier: 'DISMISS'
-          }, {
-            itemName: 'Restore Recommendation',
-            identifier: 'RESTORE'
-          }
-        ]
-      }, {
-        suggestion: 'Recommended4',
-        action: 'Upgrade',
-        message: 'Vertx Web applications have different version',
-        pop: [
-          {
-            itemName: 'Create WorkItem',
-            identifier: 'CREATE_WORK_ITEM'
-          }, {
-            itemName: 'Dismiss Recommendation',
-            identifier: 'DISMISS'
-          }, {
-            itemName: 'Restore Recommendation',
-            identifier: 'RESTORE'
-          }
-        ]
-      },
-      {
-        suggestion: 'Recommended5',
-        action: 'Downgrade',
-        message: 'Vertx Web applications have different version',
-        pop: [
-          {
-            itemName: 'Create WorkItem',
-            identifier: 'CREATE_WORK_ITEM'
-          }, {
-            itemName: 'Dismiss Recommendation',
-            identifier: 'DISMISS'
-          }, {
-            itemName: 'Restore Recommendation',
-            identifier: 'RESTORE'
-          }
-        ]
-      },
-      {
-        suggestion: 'Recommended6',
-        action: 'Remove',
-        message: 'Vertx Web applications have different version',
-        pop: [
-          {
-            itemName: 'Create WorkItem',
-            identifier: 'CREATE_WORK_ITEM'
-          }, {
-            itemName: 'Dismiss Recommendation',
-            identifier: 'DISMISS'
-          }, {
-            itemName: 'Restore Recommendation',
-            identifier: 'RESTORE'
-          }
-        ]
-      }
-    ];
-
     this.dependencyItem = [{
       name: 'v1.vmnei.somename',
       curVersion: '1.0',
@@ -427,29 +323,6 @@ export class StackDetailsComponent implements OnInit {
     }
   }
 
-  // TODO: To be removed after the demo
-  private fetchStaticRecommendation(): any {
-    return {
-      'recommendations': {
-        'similar_stacks': [
-          {
-            'analysis': {
-              'version_mismatch': {
-                'vertx:vertx-web-templ-freemarker': '3.3.4',
-                'vertx:vertx-web-templ-mvel': '3.4.0'
-              },
-              'missing_packages': {
-                'vertx:vertx-mongo-embedded-db': '3.3.3'
-              }
-            },
-            'similarity': 0.7009090909090909,
-            'uri': 'http://cucos-01.lab.eng.brq.redhat.com:32100/api/v1.0/appstack/18'
-          }
-        ]
-      }
-    };
-  }
-
   private setComponentsToGrid(stackData: any): void {
     let components: Array<any> = stackData.components;
     let length: number = components.length;
@@ -522,25 +395,15 @@ export class StackDetailsComponent implements OnInit {
       .subscribe(data => {
         if (data && Object.keys(data).length !== 0) {
           stackAnalysesData = data;
-          if (Object.prototype.toString.call(stackAnalysesData) !== '[object Array]') {
-            stackAnalysesData = stackAnalysesData.result[0];
-          } else {
-            stackAnalysesData = stackAnalysesData[0];
-          }
+          let result: any = stackAnalysesData.result[0];
+          let components: Array<any> = result.components;
+          let recommendations: Array<any> = stackAnalysesData.recommendation.recommendations;
 
-          if (!stackAnalysesData.recommendation) {
-            // Add static recommendations here in case recommendations are not fetched
-            // from the API
-            // Solely for Demo purpose and to be removed later.
-            stackAnalysesData['recommendation'] = this.fetchStaticRecommendation();
-          }
+          this.getRecommendations(components, recommendations);
 
-          this.getRecommendations(stackAnalysesData.components,
-            stackAnalysesData.recommendation.recommendations);
-
-          this.getComponents(stackAnalysesData.components);
-          this.setStackMetrics(stackAnalysesData);
-          this.setComponentsToGrid(stackAnalysesData);
+          this.getComponents(components);
+          this.setStackMetrics(result);
+          this.setComponentsToGrid(result);
         } else {
           this.errorMessage.message = `This could take a while. Return to pipeline to keep
            working or stay on this screen to review progress.`;
