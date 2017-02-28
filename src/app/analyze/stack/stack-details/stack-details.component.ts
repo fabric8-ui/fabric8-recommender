@@ -203,7 +203,7 @@ export class StackDetailsComponent implements OnInit {
       CVEdata: ['CVE-2014-0001', 'CVE-2014-12345', 'CVE-2013-78934']
     };
 
-this.dependencyItem = [{
+this.dependencies = [{
       name: 'v1.vmnei.somename',
       curVersion: '1.0',
       latestVersion: '3.1',
@@ -599,7 +599,7 @@ this.dependencyItem = [{
   private showStackModal(event): void {
     this.modalStackModule.open();
     //TODO : below hack needs to be removed
-    // This hack was introduced as c3's chart was not properly rendered on load 
+    // This hack was introduced as c3's chart was not properly rendered on load
     // but on triggering some random changes works fine
 
     setTimeout(() => {
