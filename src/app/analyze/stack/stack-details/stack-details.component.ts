@@ -384,58 +384,6 @@ export class StackDetailsComponent implements OnInit {
     this.dependencies = components;
   }
 
-  /* Get Recommendation */
-  private getRecommendations(components: any, recommendation: any): void {
-    this.similarStacks = recommendation.similar_stacks;
-    const analysis: any = this.similarStacks[0].analysis;
-    let missingPackages: Array<any> = analysis.missing_packages;
-    let versionMismatch: Array<any> = analysis.version_mismatch;
-
-
-    // Call the recommendations with the missing packages and version mismatches
-    this.setRecommendations(missingPackages, versionMismatch);
-
-    // Call the stack-components with the components information so that
-    // It can parse the necessary information and show relevant things.
-    this.setDependencies(components);
-
-    const url: string = this.similarStacks[0].uri;
-    this.recoArray[this.currentIndex]['rows'] = [];
-    this.recoArray[this.currentIndex]['url'] = url;
-    for (let component in components) {
-      if (components.hasOwnProperty(component)) {
-        this.recoArray[this.currentIndex]['rows'].push({
-          name: components[component].name,
-          version: components[component].version
-        });
-      }
-    }
-    for (let i in missingPackages) {
-      if (missingPackages.hasOwnProperty(i)) {
-        this.recoArray[this.currentIndex]['rows'].push({
-          'name': i,
-          'version': missingPackages[i],
-          'custom': {
-            'name': 'Add',
-            'type': 'checkbox'
-          }
-        });
-      }
-    }
-    for (let i in versionMismatch) {
-      if (versionMismatch.hasOwnProperty(i)) {
-        this.recoArray[this.currentIndex]['rows'].push({
-          'name': i,
-          'version': versionMismatch[i],
-          'custom': {
-            'name': 'Update',
-            'type': 'checkbox'
-          }
-        });
-      }
-    }
-  }
-
 
   private getComponents(components): void {
     this.currentStackRows = [];
@@ -523,15 +471,34 @@ export class StackDetailsComponent implements OnInit {
       .subscribe(data => {
         if (data && Object.keys(data).length !== 0) {
           stackAnalysesData = data;
-          let result: any = stackAnalysesData.result[0];
-          let components: Array<any> = result.components;
-          let recommendations: Array<any> = stackAnalysesData.recommendation.recommendations;
+          let result: any;
+          let components: Array<any> = [];
 
-          this.getRecommendations(components, recommendations);
+          if (stackAnalysesData.hasOwnProperty('result') && stackAnalysesData.result.length > 0) {
+            result = stackAnalysesData.result[0];
+            if (result.hasOwnProperty('components')) {
+              components = result.components;
+              this.getComponents(components);
+              // Call the stack-components with the components information so that
+              // It can parse the necessary information and show relevant things.
+              this.setDependencies(components);
+            }
 
-          this.getComponents(components);
-          this.setStackMetrics(result);
-          this.setComponentsToGrid(result);
+            this.setStackMetrics(result);
+            this.setComponentsToGrid(result);
+          }
+          if (stackAnalysesData.hasOwnProperty('recommendation')) {
+            let recommendation: any = stackAnalysesData.recommendation.recommendations;
+            if (recommendation) {
+              this.similarStacks = recommendation.similar_stacks;
+              const analysis: any = this.similarStacks[0].analysis;
+              let missingPackages: Array<any> = analysis.missing_packages;
+              let versionMismatch: Array<any> = analysis.version_mismatch;
+
+              // Call the recommendations with the missing packages and version mismatches
+              this.setRecommendations(missingPackages, versionMismatch);
+            }
+          }
         } else {
           this.errorMessage.message = `This could take a while. Return to pipeline to keep
            working or stay on this screen to review progress.`;
@@ -600,7 +567,7 @@ export class StackDetailsComponent implements OnInit {
 
   private showStackModal(event): void {
     this.modalStackModule.open();
-    //TODO : below hack needs to be removed
+    // TODO : below hack needs to be removed
     // This hack was introduced as c3's chart was not properly rendered on load
     // but on triggering some random changes works fine
 
