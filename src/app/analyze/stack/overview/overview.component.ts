@@ -11,57 +11,56 @@ export class OverviewComponent implements OnInit {
     private dependenciesChart: any;
     private compUsageChart: any;
     private cveDataList: any;
-    private chartConfigs: any;
-    private chartOptions: any;
 
     constructor() { }
 
     ngOnInit() {
-        if (this.stackOverviewData) {
-            this.chartOptions = {
-                    donut: {
-                        width: 50,
-                        title: ''
-                    },
-                    color: {
-                        pattern: ['#696969', '#A9A9A9']
-                    }
-                };
-            this.chartConfigs = {
-                    legend: {
-                        position: 'right'
-                    }
-                };
+        this.initOverviewComponents(this.stackOverviewData);
+    }
 
-            this.dependenciesChart = {
-                data: {
-                    columns: [],
-                    type: 'donut'
-                },
-                chartOptions: {},
-                configs: {}
-            };
-
-            this.compUsageChart = {
-                data: {
-                    columns: [],
-                    type: 'donut'
-                },
-                chartOptions: {},
-                configs: {}
-            };
-
-            this.dependenciesChart.chartOptions = this.chartOptions;
-            this.dependenciesChart.configs = this.chartConfigs;
-            this.dependenciesChart.data.columns = this.stackOverviewData.dependencyChart;
-            this.dependenciesChart.chartOptions.donut.title = '32 Dependencies';
-
-            this.compUsageChart.chartOptions = this.chartOptions;
-            this.compUsageChart.configs = this.chartConfigs;
-            this.compUsageChart.data.columns = this.stackOverviewData.compUsageChart;
-            this.compUsageChart.chartOptions.donut.title = 'Component usage';
-
-            this.cveDataList = this.stackOverviewData.CVEdata;
+    private initOverviewComponents(stackOverviewData: any): void {
+        if (stackOverviewData) {
+            this.setDependencyChartData(stackOverviewData);
+            this.setCompUsageChartData(stackOverviewData);
+            this.cveDataList = stackOverviewData.CVEdata;
         }
     }
+
+    private getDonutChartConfig(): any {
+        let chartConfig: any = {};
+        chartConfig.chartOptions = {
+            donut: {
+                width: 50,
+                title: ''
+            },
+            color: {
+                pattern: ['#696969', '#A9A9A9']
+            }
+        };
+        chartConfig.configs = {
+            legend: {
+                position: 'right'
+            }
+        };
+        return chartConfig;
+    }
+
+    private setDependencyChartData(stackOverviewData: any): any {
+        let chartDataConfig = this.getDonutChartConfig();
+        this.dependenciesChart = chartDataConfig;
+        this.dependenciesChart.data = {};
+        this.dependenciesChart.data.columns = stackOverviewData.dependencyChart;
+        this.dependenciesChart.data.type = 'donut';
+        this.dependenciesChart.chartOptions.donut.title = '32 Dependencies';
+    }
+
+    private setCompUsageChartData(stackOverviewData: any): any {
+        let chartDataConfig = this.getDonutChartConfig();
+        this.compUsageChart = chartDataConfig;
+        this.compUsageChart.data = {};
+        this.compUsageChart.data.columns = stackOverviewData.compUsageChart;
+        this.compUsageChart.data.type = 'donut';
+        this.compUsageChart.chartOptions.donut.title = 'Component usage';
+    }
+
 }
