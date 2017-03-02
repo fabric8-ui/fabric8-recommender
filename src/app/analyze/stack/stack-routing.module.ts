@@ -1,9 +1,10 @@
-import { StackOverviewComponent } from './stack-overview/stack-overview.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { StackOverviewComponent } from './stack-overview/stack-overview.component';
+
 import { StackComponent } from './stack.component';
-import { RenderStackDetailsComponent } from './render-stack-details/render-stack-details.component';
+//import { RenderStackDetailsComponent } from './render-stack-details/render-stack-details.component';
 
 const routes: Routes = [
   {
