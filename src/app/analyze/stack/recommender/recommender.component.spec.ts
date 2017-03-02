@@ -1,5 +1,6 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { Observable } from 'rxjs/Observable';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { HttpModule, Http } from '@angular/http';
@@ -12,6 +13,123 @@ import { witApiUrlProvider } from './../../../shared/wit-api.provider';
 
 import { RecommenderComponent } from './recommender.component';
 import { AddWorkFlowService } from '../stack-details/add-work-flow.service';
+
+describe('Service test for StackRecommenderComponent', () => {
+    beforeEach(async(() => {
+        let mockAddWorkFlowService: any = {
+            addWorkFlow: function (workItemData: any) {
+                let apiResponse: any = {
+                    finished_at: '2017-02-27T06:01:19.162056',
+                    recommendation: {
+                        recommendations: {
+                            component_level: null,
+                            similar_stacks: [
+                                {
+                                analysis: {
+                                    missing_downstream_component: {
+
+                                    },
+                                    missing_packages: {
+                                        'io.vertx:vertx-jdbc-client': '3.3.3'
+                                    },
+                                    version_mismatch: {
+
+                                    }
+                                },
+                                original_score: 0.42857142857142855,
+                                similarity: 0.42857142857142855,
+                                source: 'vertx',
+                                stack_id: '2bff6a88349348d0b73838d751819c9d',
+                                usage: 1
+                                },
+                                {
+                                analysis: {
+                                    missing_downstream_component: {
+
+                                    },
+                                    missing_packages: {
+                                        'io.vertx:vertx-jdbc-client': '3.3.3'
+                                    },
+                                    version_mismatch: {
+
+                                    }
+                                },
+                                original_score: 0.5714285714285714,
+                                similarity: 0.5714285714285714,
+                                source: 'vertx',
+                                stack_id: '2bff6a88349348d0b73838d751819c9d',
+                                usage: 1
+                                },
+                                {
+                                analysis: {
+                                    missing_downstream_component: {
+
+                                    },
+                                    missing_packages: {
+                                        'io.vertx:vertx-jdbc-client': '3.3.3'
+                                    },
+                                    version_mismatch: {
+
+                                    }
+                                },
+                                original_score: 0.7142857142857143,
+                                similarity: 0.7142857142857143,
+                                source: 'vertx',
+                                stack_id: '2bff6a88349348d0b73838d751819c9d',
+                                usage: 1
+                                },
+                                {
+                                analysis: {
+                                    missing_downstream_component: {
+
+                                    },
+                                    missing_packages: {
+                                        'io.vertx:vertx-jdbc-client': '3.3.3'
+                                    },
+                                    version_mismatch: {
+
+                                    }
+                                },
+                                original_score: 0.8571428571428571,
+                                similarity: 0.8571428571428571,
+                                source: 'vertx',
+                                stack_id: '2bff6a88349348d0b73838d751819c9d',
+                                usage: 1
+                                }
+                            ]
+                        }
+                    }
+                };
+                return Observable.create(observer => {
+                    observer.next(apiResponse);
+                    observer.complete();
+                });
+            }
+        };
+        TestBed.configureTestingModule({
+            imports: [
+                CommonModule,
+                HttpModule
+            ],
+            declarations: [RecommenderComponent],
+            providers: [
+                {
+                    provide: AddWorkFlowService,
+                    useValue: mockAddWorkFlowService
+                },
+                witApiUrlProvider,
+                recommenderApiUrlProvider,
+                ApiLocatorService
+            ]
+            })
+            .compileComponents();
+    }));
+
+    it('Should hit the service and receive a response of type Observable<any>', inject([AddWorkFlowService], (addWorkFlow) => {
+        let result = addWorkFlow.addWorkFlow();
+        expect(result instanceof Observable).toBe(true);
+    }));
+});
 
 describe('StackRecommenderComponent', () => {
     let component: RecommenderComponent;
@@ -152,7 +270,7 @@ describe('StackRecommenderComponent', () => {
       });
     }));
 
-    fit('For Create flow, Should return className \'activate\' and to be of type string', () => {
+    it('For Create flow, Should return className \'activate\' and to be of type string', () => {
       let comp: any = new RecommenderComponent(null);
       let item: any = {
           itemName: 'Create WorkItem',
@@ -182,7 +300,7 @@ describe('StackRecommenderComponent', () => {
       expect(className).toBe('activate');
     });
 
-    fit('For Dismiss flow, Should return className \'deactivate\' and of type string', () => {
+    it('For Dismiss flow, Should return className \'deactivate\' and of type string', () => {
       let comp: any = new RecommenderComponent(null);
       let item: any = {
           itemName: 'Dismiss Recommendation',
@@ -212,7 +330,7 @@ describe('StackRecommenderComponent', () => {
       expect(className).toBe('deactivate');
     });
 
-    fit('For Restore case, Should return className \'activate\' and of type string', () => {
+    it('For Restore case, Should return className \'activate\' and of type string', () => {
       let comp: any = new RecommenderComponent(null);
       let item: any = {
         itemName: 'Restore Recommendation',
@@ -242,7 +360,7 @@ describe('StackRecommenderComponent', () => {
       expect(className).toBe('activate');
     });
 
-    fit('For Restore case, Should return className \'deactivate\' and of type string', () => {
+    it('For Restore case, Should return className \'deactivate\' and of type string', () => {
       let comp: any = new RecommenderComponent(null);
       let item: any = {
         itemName: 'Restore Recommendation',
@@ -347,6 +465,56 @@ describe('StackRecommenderComponent', () => {
           expect(!oldArray[i]).toBe(recommendations[i].isDismissed);
         }
       }
+    });
+
+    it('Should call function canCreateWorkItem() when there are recommendations', () => {
+        const recommenderComponent: any = new RecommenderComponent(null);
+        let r: any = {
+            suggestion: 'Recommended',
+            action: 'Add',
+            message: 'vertex-missing',
+            isDismissed: false,
+            pop: [
+                {
+                itemName: 'Create WorkItem',
+                identifier: 'CREATE_WORK_ITEM'
+                }, {
+                itemName: 'Dismiss Recommendation',
+                identifier: 'DISMISS'
+                }, {
+                itemName: 'Restore Recommendation',
+                identifier: 'RESTORE'
+                }
+            ]
+        };
+        spyOn(recommenderComponent, 'canCreateWorkItem');
+        recommenderComponent.handleCreateWorkItemAction([r]);
+        expect(recommenderComponent.canCreateWorkItem).toHaveBeenCalled();
+    });
+
+    it('Shouldn\'t call function canCreateWorkItem() when there are no recommendations or no active recommendations', () => {
+        const recommenderComponent: any = new RecommenderComponent(null);
+        let r: any = {
+            suggestion: 'Recommended',
+            action: 'Add',
+            message: 'vertex-missing',
+            isDismissed: true,
+            pop: [
+                {
+                itemName: 'Create WorkItem',
+                identifier: 'CREATE_WORK_ITEM'
+                }, {
+                itemName: 'Dismiss Recommendation',
+                identifier: 'DISMISS'
+                }, {
+                itemName: 'Restore Recommendation',
+                identifier: 'RESTORE'
+                }
+            ]
+        };
+        spyOn(recommenderComponent, 'canCreateWorkItem');
+        recommenderComponent.handleCreateWorkItemAction([r]);
+        expect(recommenderComponent.canCreateWorkItem).toHaveBeenCalled();
     });
 
     /* it('The create work item button has to be disabled on load', () => {
