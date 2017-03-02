@@ -5,7 +5,6 @@ import { HttpModule, Http } from '@angular/http';
 import { StackDetailsComponent } from './stack-details.component';
 import { ModalModule } from 'ngx-modal';
 
-import { StackRecommendationModule } from '../stack-recommendation/stack-recommendation.module';
 import { ContainerTogglerModule } from 'ngx-widgets';
 
 import { RecommenderModule } from '../recommender/recommender.module';
@@ -19,8 +18,7 @@ import { OverviewModule } from '../overview/overview.module';
             ModalModule,
             RecommenderModule,
             StackComponentsModule,
-            OverviewModule,
-            StackRecommendationModule],
+            OverviewModule],
   declarations: [ StackDetailsComponent ],
   exports: [ StackDetailsComponent ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

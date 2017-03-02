@@ -8,12 +8,10 @@
           <div>
             <f8-recommender [recommendations]="recommendations"></f8-recommender>
           </div>
-          <!-- Recommender -->
           <!-- Stack Overview -->
           <div>
             <overview-stack [stackOverviewData]="stackOverviewData"></overview-stack>
           </div>
-          <!-- Stack Overview -->
           <div>
             <f8-stack-components [dependencies]="dependencies && dependencies"></f8-stack-components>
           </div>
@@ -50,24 +48,4 @@
     </modal>
   </div>
 </div>
-<modal #similarStack title="Create work item form recomendation with button">
-  <modal-content>
-    <form [name]="recommendationForm" (submit)="addMultipleWorkItem($event)">
-      <stack-recommendation [rows]="recoArray[currentIndex].rows" [headers]="recoArray[currentIndex].headers" [clickable]="false"
-        (customEvent)="addSelectedItem($event)" id="rec_container"></stack-recommendation>
-        <div><span [hidden]="!multiRecommendMsg">Successfully created a work item. You can see it here! <a target="_blank" href="{{multiRecommendMsg}}">Link</a></span></div>
-        <button type="submit" class="btn btn-primary">Create</button><button class="btn btn-danger" (click)="similarStack.close()">Close</button>
-    </form>
-  </modal-content>
-</modal>
-<div class="row">
-  <modal #workItemRespModal title="Response for Work item" cancelButtonLabel="close">
-    <modal-content>
-      <div>
-        <span>Successfully created a work item. You can see it here!
-            <a target="_blank" href="{{workItemRespMsg}}">Link</a>
-        </span>
-      </div>
-    </modal-content>
-  </modal>
-</div>
+
