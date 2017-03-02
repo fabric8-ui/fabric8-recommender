@@ -2,16 +2,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder, NgForm } from '@angular/forms';
 import { HttpModule, Http } from '@angular/http';
 
 import { ModalModule } from 'ngx-modal';
 import { AuthenticationService } from 'ngx-login-client';
-import { ContainerTogglerModule } from 'ngx-widgets';
 
 import { Stack } from '../../../models/stack';
-import { StackRecommendationModule } from '../stack-recommendation/stack-recommendation.module';
 import { StackDetailsComponent } from './stack-details.component';
 import { RecommenderModule } from '../recommender/recommender.module';
 import { OverviewModule } from '../overview/overview.module';
@@ -35,18 +31,15 @@ describe('StackDetailsComponent', () => {
       }
     };
     TestBed.configureTestingModule({
-      imports: [ContainerTogglerModule,
+      imports: [
         ModalModule,
-        StackRecommendationModule,
         RecommenderModule,
         OverviewModule,
         StackComponentsModule,
-        HttpModule,
-        ReactiveFormsModule
+        HttpModule
       ],
-      declarations: [StackDetailsComponent, NgForm],
+      declarations: [StackDetailsComponent],
       providers: [
-        FormBuilder,
         {
           provide: AuthenticationService,
           useValue: fakeAuthService

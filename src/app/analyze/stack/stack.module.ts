@@ -15,7 +15,7 @@ import { StackOverviewModule } from './stack-overview/stack-overview.module';
     StackRoutingModule,
     HttpModule
   ],
-  declarations: [StackComponent],
+  declarations: [StackComponent]
 })
 export class StackModule {
   constructor(http: Http) { }
