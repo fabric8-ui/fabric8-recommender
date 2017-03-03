@@ -5,8 +5,6 @@ import { CommonModule } from '@angular/common';
 import { StackComponent } from './stack.component';
 import { StackRoutingModule } from './stack-routing.module';
 
-//import { StackOverviewModule } from './stack-overview/stack-overview.module';
-
 @NgModule({
   imports: [
     StackDetailsModule,
