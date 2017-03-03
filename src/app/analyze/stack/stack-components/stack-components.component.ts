@@ -1,8 +1,7 @@
 import {
     Component,
     Input,
-    OnChanges,
-    OnInit
+    OnChanges
 } from '@angular/core';
 
 @Component({
@@ -10,7 +9,7 @@ import {
     templateUrl: './stack-components.html',
     styleUrls: ['./stack-components.scss']
 })
-export class StackComponents implements OnChanges, OnInit {
+export class StackComponents implements OnChanges {
 
     @Input() dependencies;
     private dependenciesList: Array<any> = [];
@@ -62,12 +61,6 @@ export class StackComponents implements OnChanges, OnInit {
     }
 
     ngOnChanges() {
-        if (this.dependencies) {
-            this.handleDependencies(this.dependencies);
-        }
-    }
-
-    ngOnInit() {
         if (this.dependencies) {
             this.handleDependencies(this.dependencies);
         }
