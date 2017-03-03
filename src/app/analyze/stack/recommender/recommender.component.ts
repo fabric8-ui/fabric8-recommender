@@ -8,7 +8,48 @@ import { AddWorkFlowService } from '../stack-details/add-work-flow.service';
     templateUrl: './recommender.html',
     styleUrls: ['./recommender.scss']
 })
-
+/**
+ * RecommenderComponent
+ * implements OnChanges
+ * 
+ * Selector: 
+ * 'f8-recommender'
+ * 
+ * Template:
+ * recommender.html
+ * 
+ * Style:
+ * recommender.scss
+ * 
+ * Functionality:
+ * Handles the display of recommendations for the given package information.
+ * 
+ * Parent Component: 
+ * StackDetailsComponent
+ * 
+ * Services:
+ * AddWorkFlowService
+ * 
+ * It receives the input as an Array from the parent Component
+ * 
+ * The view changes based on those values.
+ * 
+ * 1. If there are no values at all or they are empty,
+ *  'No Recommendations Scenario' is shown
+ * 
+ * 2. If there are recommendation,
+ * They are shown as a list of items one below another 
+ * with each having various actions associated with them,
+ * Actions:
+ *  a. Create Work Item (If the current recommendation is not dismissed, 
+ *                       it is allowed for creating a work item)
+ *  b. Dismiss Work Item (To make the recommendation item not creatable)
+ *  c. Restore Work Item (To restore if the recommendation is already dismissed)
+ * 
+ * 3. Enables creation, dismissal and restoration of multiple recommendations 
+ *    based on what is selected
+ * 
+ */
 export class RecommenderComponent implements OnChanges {
 
     @Input() recommendations;
@@ -94,14 +135,21 @@ export class RecommenderComponent implements OnChanges {
         event.preventDefault();
     }
 
-
+    /**
+     * This toggles the visibility of the drop down list.
+     */
     private hideDropDown(element: Element): void {
         if (element.classList.contains('show-drop')) {
             element.classList.remove('show-drop');
         }
     }
 
-
+    /**
+     * Handles the click from the list item - drop down
+     * 1. Create Work Item
+     * 2. Dismiss
+     * 3. Restore
+     */
     private handleAllActionDropDownClick(item: any, event: Event): void {
         if (item) {
             let identifier: string = item.identifier;
@@ -307,7 +355,13 @@ export class RecommenderComponent implements OnChanges {
         });
     }
 
-
+    /**
+     * 'activate' - this classname gets added if any of the action items can be enabled
+     *  so that user can perform the actions
+     * 
+     *  'deactivate' - this classname gets added if any of the action needs to be disabled.
+     *  so that it is disabled for the user to perform any action
+     */
     private getCurrentClass(item: any, recommendation: any): string {
         let className: string = 'deactivate';
         let identifier: string = item.identifier;
@@ -320,6 +374,10 @@ export class RecommenderComponent implements OnChanges {
         return className;
     }
 
+    /**
+     * Checks if multiple work items can be created
+     * returns true/false
+     */
     private canCreateAllWorkItems(): boolean {
         if (this.newRecommendations.length > 0) {
             return this.newRecommendations.some(recommendation => recommendation.isDismissed === false || recommendation.isDismissed === undefined);
