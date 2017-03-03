@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Stack } from './../../../models/stack';
@@ -10,7 +10,7 @@ import { ContextService } from './../../../shared/context.service';
   templateUrl: 'stack-overview.component.html',
   styleUrls: ['./stack-overview.component.scss']
 })
-export class StackOverviewComponent implements OnInit {
+export class StackOverviewComponent {
 
   private collapsed: Map<Stack, Boolean>;
 
@@ -19,9 +19,4 @@ export class StackOverviewComponent implements OnInit {
     public context: ContextService) {
     this.collapsed = new Map();
   }
-
-  ngOnInit() {
-
-  }
-
 }
