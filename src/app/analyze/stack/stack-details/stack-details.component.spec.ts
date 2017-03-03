@@ -20,6 +20,7 @@ import { witApiUrlProvider } from './../../../shared/wit-api.provider';
 describe('StackDetailsComponent', () => {
   let component: StackDetailsComponent;
   let fixture: ComponentFixture<StackDetailsComponent>;
+  let debugElement: DebugElement;
 
   beforeEach(async(() => {
     let fakeAuthService: any = {
@@ -60,5 +61,34 @@ describe('StackDetailsComponent', () => {
     component.stack = stack;
     fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(StackDetailsComponent);
+    component = fixture.componentInstance;
+    debugElement = fixture.debugElement;
+    let stack: Stack = new Stack();
+    stack.uuid = '2ec2749ef0711bad2112ef45c2a5ee47bd32a6e4';
+    component.stack = stack;
+    fixture.detectChanges();
+  });
+
+  it('On click should open the modal', async(() => {
+    let stackComponent: any = fixture.componentInstance;
+    spyOn(stackComponent, 'showStackModal');
+    let button: any = debugElement.nativeElement.querySelector('.stack-reports-btn');
+    button.click();
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(stackComponent.showStackModal).toHaveBeenCalled();
+    });
+  }));
+
+  it('Should call getStackAnalyses function, on load of ngOnInit', () => {
+    let stackComponent: any = component;
+    spyOn(stackComponent, 'getStackAnalyses');
+    stackComponent.ngOnInit();
+    fixture.detectChanges();
+    expect(stackComponent.getStackAnalyses).toHaveBeenCalled();
   });
 });

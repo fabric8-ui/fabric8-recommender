@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <button (click)="showStackModal($event)">Stack Reports</button>
+    <button class="stack-reports-btn" (click)="showStackModal($event)">Stack Reports</button>
     <modal #stackModule title="Report title on {{stackAnalysisRawData.packageName}}" modalClass="modal-lg modal-fullscreen">
       <modal-content>
         <div [hidden]="errorMessage.message">
