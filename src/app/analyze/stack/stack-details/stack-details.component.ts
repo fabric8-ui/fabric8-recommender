@@ -1,4 +1,10 @@
-import { Component, OnInit, Input, ViewEncapsulation, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewEncapsulation,
+  ViewChild
+} from '@angular/core';
 
 import { Logger } from 'ngx-login-client';
 import { Observable } from 'rxjs/Observable';
@@ -11,12 +17,36 @@ import { AddWorkFlowService } from './add-work-flow.service';
   selector: 'stack-details',
   templateUrl: './stack-details.component.html',
   styleUrls: ['./stack-details.component.scss'],
-  providers: [AddWorkFlowService,
+  providers: [
+    AddWorkFlowService,
     Logger,
-    StackAnalysesService],
+    StackAnalysesService
+  ],
   encapsulation: ViewEncapsulation.None
 })
-
+/**
+ * StackDetailsComponent - Provides the detailed analysis for the given codebase 
+ * by giving recommendation, overview and information about the dependencies of their packages
+ * 
+ * implements OnInit
+ * 
+ * Selector: 'stack-details'
+ * Template: stack-details.component.html
+ * Style: stack-details.component.scss
+ * 
+ * Services:
+ * 1. AddWorkFlowService
+ * 2. Logger
+ * 3. StackAnalysesService
+ * 
+ * Parent component that includes,
+ * 1. Recommendations
+ * 2. Overview
+ * 3. Components/Dependencies
+ * 
+ * Hits the Stack Analysis Service, gets the response
+ * Passes the tailored response to each of the children.
+ */
 export class StackDetailsComponent implements OnInit {
 
   @Input() stack: Stack;
@@ -25,10 +55,10 @@ export class StackDetailsComponent implements OnInit {
   errorMessage: any = {};
   stackAnalysesData: Array<any> = [];
   componentAnalysesData: any = {};
-  mode = 'Observable';
+  mode: string = 'Observable';
 
-  componentDataObject = {};
-  componentsDataTable = [];
+  componentDataObject: any = {};
+  componentsDataTable: Array<any> = [];
 
   currentIndex: number = 0;
 
@@ -51,6 +81,15 @@ export class StackDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.getStackAnalyses(this.stack.uuid);
+    this.setStackAnalysisChartData();
+  }
+
+  /**
+   * setStackAnalysisChartData - takes nothing and returns nothing
+   * This function helps in setting the data that will be passed for
+   * overview component
+   */
+  private setStackAnalysisChartData(): void {
     this.stackOverviewData = {
       dependencyChart: [
         ['internal', 11],
@@ -64,6 +103,31 @@ export class StackDetailsComponent implements OnInit {
     };
   }
 
+  /**
+   * getRecommendationActions - takes nothing and returns an Array<any>
+   * This function returns the static Array of objects that are to be used
+   * as actions for each recommendation.
+   */
+  private getRecommendationActions(): Array<any> {
+    return [
+      {
+        itemName: 'Create WorkItem',
+        identifier: 'CREATE_WORK_ITEM'
+      }, {
+        itemName: 'Dismiss Recommendation',
+        identifier: 'DISMISS'
+      }, {
+        itemName: 'Restore Recommendation',
+        identifier: 'RESTORE'
+      }
+    ];
+  }
+
+  /**
+   * setRecommendations - takes missing (Array), version (Array) and returns nothing.
+   * This function gets the missing packages information and version mismatch information
+   * Displays the information accordingly on screen
+   */
   private setRecommendations(missing: Array<any>, version: Array<any>): void {
     this.recommendations = [];
     for (let i in missing) {
@@ -72,18 +136,7 @@ export class StackDetailsComponent implements OnInit {
           suggestion: 'Recommended',
           action: 'Add',
           message: i + ' ' + missing[i],
-          pop: [
-            {
-              itemName: 'Create WorkItem',
-              identifier: 'CREATE_WORK_ITEM'
-            }, {
-              itemName: 'Dismiss Recommendation',
-              identifier: 'DISMISS'
-            }, {
-              itemName: 'Restore Recommendation',
-              identifier: 'RESTORE'
-            }
-          ]
+          pop: this.getRecommendationActions()
         });
       }
     }
@@ -94,18 +147,7 @@ export class StackDetailsComponent implements OnInit {
           suggestion: 'Recommended',
           action: 'Upgrade',
           message: i + ' ' + version[i],
-          pop: [
-            {
-              itemName: 'Create WorkItem',
-              identifier: 'CREATE_WORK_ITEM'
-            }, {
-              itemName: 'Dismiss Recommendation',
-              identifier: 'DISMISS'
-            }, {
-              itemName: 'Restore Recommendation',
-              identifier: 'RESTORE'
-            }
-          ]
+          pop: this.getRecommendationActions()
         });
       }
     }
@@ -118,7 +160,7 @@ export class StackDetailsComponent implements OnInit {
   private setComponentsToGrid(stackData: any): void {
     let components: Array<any> = stackData.components;
     let length: number = components.length;
-    for (let i = 0; i < length; i++) {
+    for (let i: number = 0; i < length; i++) {
       let myObj: any = {};
       myObj.ecosystem = components[i].ecosystem;
       myObj.pkg = components[i].name;
@@ -141,16 +183,22 @@ export class StackDetailsComponent implements OnInit {
     }
   }
 
-  private getStackAnalyses(id: string) {
+  /**
+   * getStackAnalyses - takes an id (string) and returns nothing.
+   * This hits the service and gets the response and passes it on to different functions.
+   */
+  private getStackAnalyses(id: string): void {
     let stackAnalysesData: any = {};
     this.stackAnalysesService
       .getStackAnalyses(id)
       .subscribe(data => {
+        // Enter the actual scene only if the data is valid and the data has something inside.
         if (data && Object.keys(data).length !== 0) {
           stackAnalysesData = data;
           let result: any;
           let components: Array<any> = [];
 
+          // Check if the data has results key
           if (stackAnalysesData.hasOwnProperty('result') && stackAnalysesData.result.length > 0) {
             result = stackAnalysesData.result[0];
             if (result.hasOwnProperty('components')) {
@@ -162,6 +210,8 @@ export class StackDetailsComponent implements OnInit {
 
             this.setComponentsToGrid(result);
           }
+
+          // Check if the data has recommendation key
           if (stackAnalysesData.hasOwnProperty('recommendation')) {
             let recommendation: any = stackAnalysesData.recommendation.recommendations;
             if (recommendation) {
@@ -175,16 +225,17 @@ export class StackDetailsComponent implements OnInit {
             }
           }
         } else {
+          // Set an error if the data is invalid or not proper.
           this.errorMessage.message = `This could take a while. Return to pipeline to keep
            working or stay on this screen to review progress.`;
           this.errorMessage.stack = '';
         }
       },
       error => {
+        // Throw error when the service fails
         this.errorMessage.message = <any>error.message;
         this.errorMessage.stack = <any>error.stack;
-      }
-      );
+      });
   }
 
   private showStackModal(event): void {
