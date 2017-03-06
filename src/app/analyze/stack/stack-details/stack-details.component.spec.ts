@@ -16,6 +16,7 @@ import { StackComponentsModule } from '../stack-components/stack-components.modu
 import { recommenderApiUrlProvider } from './../../../shared/recommender-api.provider';
 import { ApiLocatorService } from './../../../shared/api-locator.service';
 import { witApiUrlProvider } from './../../../shared/wit-api.provider';
+import { GlobalConstants } from '../constants/constants.service';
 
 describe('StackDetailsComponent', () => {
   let component: StackDetailsComponent;
@@ -47,7 +48,8 @@ describe('StackDetailsComponent', () => {
         },
         witApiUrlProvider,
         recommenderApiUrlProvider,
-        ApiLocatorService
+        ApiLocatorService,
+        GlobalConstants
       ]
     })
       .compileComponents();
@@ -83,12 +85,4 @@ describe('StackDetailsComponent', () => {
       expect(stackComponent.showStackModal).toHaveBeenCalled();
     });
   }));
-
-  it('Should call getStackAnalyses function, on load of ngOnInit', () => {
-    let stackComponent: any = component;
-    spyOn(stackComponent, 'getStackAnalyses');
-    stackComponent.ngOnInit();
-    fixture.detectChanges();
-    expect(stackComponent.getStackAnalyses).toHaveBeenCalled();
-  });
 });
