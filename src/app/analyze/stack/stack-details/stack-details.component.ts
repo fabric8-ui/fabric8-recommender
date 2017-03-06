@@ -7,6 +7,8 @@ import { Stack } from './../../../models/stack';
 import { StackAnalysesService } from '../stack-analyses.service';
 import { AddWorkFlowService } from './add-work-flow.service';
 
+import { GlobalConstants } from '../constants/constants.service';
+
 @Component({
   selector: 'stack-details',
   templateUrl: './stack-details.component.html',
@@ -46,7 +48,8 @@ export class StackDetailsComponent implements OnInit {
   constructor(
     private addWorkFlowService: AddWorkFlowService,
     private stackAnalysesService: StackAnalysesService,
-    private logger: Logger
+    private logger: Logger,
+    private messages: GlobalConstants
   ) { }
 
   ngOnInit() {
@@ -62,6 +65,10 @@ export class StackDetailsComponent implements OnInit {
       ],
       CVEdata: ['CVE-2014-0001', 'CVE-2014-12345', 'CVE-2013-78934']
     };
+
+    this.messages.getMessages('stackDetails').subscribe((messages) => {
+      console.log(messages);
+    });
   }
 
   private setRecommendations(missing: Array<any>, version: Array<any>): void {
