@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { StackOverviewComponent } from './stack-overview/stack-overview.component';
+import { StackDetailsComponent } from './stack-details/stack-details.component';
 
 import { StackComponent } from './stack.component';
 
@@ -17,7 +17,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: StackOverviewComponent
+        component: StackDetailsComponent
       }
     ]
   }

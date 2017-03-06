@@ -16,7 +16,7 @@ import { AddWorkFlowService } from './add-work-flow.service';
 import { GlobalConstants } from '../constants/constants.service';
 
 @Component({
-  selector: 'stack-details',
+  selector: 'alm-stack',
   templateUrl: './stack-details.component.html',
   styleUrls: ['./stack-details.component.scss'],
   providers: [
@@ -83,7 +83,7 @@ export class StackDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getStackAnalyses(this.stack.uuid);
+    //this.getStackAnalyses(this.stack.uuid);
     this.setStackAnalysisChartData();
   }
 
@@ -247,6 +247,7 @@ export class StackDetailsComponent implements OnInit {
 
   private showStackModal(event): void {
     this.modalStackModule.open();
+    this.getStackAnalyses('8950acb76bc84235873d73d149cb9f61');
     // TODO : below hack needs to be removed
     // This hack was introduced as c3's chart was not properly rendered on load
     // but on triggering some random changes works fine
