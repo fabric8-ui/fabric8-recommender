@@ -9,6 +9,41 @@ import {
     templateUrl: './stack-components.html',
     styleUrls: ['./stack-components.scss']
 })
+
+/**
+ * StackComponents
+ * implements OnChanges
+ * 
+ * Selector: 
+ * 'f8-stack-components'
+ * 
+ * Template:
+ * stack-components.html
+ * 
+ * Style:
+ * stack-components.scss
+ * 
+ * Functionality:
+ * Handles the display of dependant packages/units for the given package information.
+ * 
+ * Parent Component: 
+ * StackDetailsComponent
+ * 
+ * Pipes:
+ * table-orderby.pipe.ts
+ * table-filter.pipe.ts
+ * 
+ * Features:
+ * 1. Column Sorting
+ * 2. Table Filtering
+ * 
+ * It receives the input as an Array from the parent Component
+ * 
+ * The view changes based on those values.
+ * 
+ * Dynamically updates the table entries on filtering or on sorting.
+ * 
+ */
 export class StackComponents implements OnChanges {
 
     @Input() dependencies;
@@ -114,12 +149,20 @@ export class StackComponents implements OnChanges {
             }
         }
     }
-
+    /**
+     * handleKeyUpEvent - takes an event and returns nothing
+     * 
+     * Gets triggered everytime a value is typed in the filter box
+     * Sets the received value to the fieldValue
+     */
     private handleKeyUpEvent(event: Event): void {
         let target: any = event.target;
         this.fieldValue = target.value;
     }
 
+    /**
+     * Handles the click after changing the filters.
+     */
     private handleDropDownClick(element: Element): void {
         if (element.classList.contains('open')) {
             element.classList.remove('open');
@@ -140,6 +183,11 @@ export class StackComponents implements OnChanges {
         event.preventDefault();
     }
 
+    /**
+     * Handles the column header click.
+     * This changes the tables entries either to ascending order or 
+     * desending order in context to the field
+     */
     private handleTableOrderClick(header: any): void {
         if (header.isSortable) {
             this.orderByName = header.identifier;
