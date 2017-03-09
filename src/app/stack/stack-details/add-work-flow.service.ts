@@ -1,7 +1,8 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { AuthenticationService } from 'ngx-login-client';
-import { WIT_API_URL } from 'ngx-fabric8-wit';
+//import { AuthenticationService } from 'ngx-login-client';
+//import {OAuthService} from 'angular2-oauth2/oauth-service';
+//import { WIT_API_URL } from 'ngx-fabric8-wit';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -15,13 +16,15 @@ export class AddWorkFlowService {
 
   constructor(
     private http: Http,
-    private auth: AuthenticationService,
-    @Inject(WIT_API_URL) apiUrl: string) {
-    if (this.auth.getToken() !== null) {
-      this.headers.set('Authorization', 'Bearer ' + this.auth.getToken());
+   // private auth: OAuthService
+    ) {
+    // @Inject(WIT_API_URL) apiUrl: string)
+  //   private apiUrl: string) {
+    /* if (this.auth.getAccessToken() !== null) {
+       this.headers.set('Authorization', 'Bearer ' + this.auth.getAccessToken());
+     }
+     this.stackWorkItemUrl = 'http://api.prod-preview.openshift.io/api/' + 'workitems'; // apiUrl + 'workitems'; */
     }
-    this.stackWorkItemUrl = apiUrl + 'workitems';
-  }
 
   addWorkFlow(workItemData: any): Observable<any> {
     let options = new RequestOptions({ headers: this.headers });

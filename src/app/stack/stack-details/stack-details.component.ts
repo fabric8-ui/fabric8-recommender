@@ -6,12 +6,9 @@ import {
   ViewChild
 } from '@angular/core';
 
-import { Logger } from 'ngx-login-client';
-import { Observable } from 'rxjs/Observable';
+// import { Logger } from '../../node_modules/ngx-login-client';
 
-import { Stack } from './../../../models/stack';
 import { StackAnalysesService } from '../stack-analyses.service';
-import { AddWorkFlowService } from './add-work-flow.service';
 
 import { GlobalConstants } from '../constants/constants.service';
 
@@ -20,8 +17,7 @@ import { GlobalConstants } from '../constants/constants.service';
   templateUrl: './stack-details.component.html',
   styleUrls: ['./stack-details.component.scss'],
   providers: [
-    AddWorkFlowService,
-    Logger,
+    // Logger,
     StackAnalysesService
   ],
   encapsulation: ViewEncapsulation.None
@@ -51,7 +47,8 @@ import { GlobalConstants } from '../constants/constants.service';
  */
 export class StackDetailsComponent implements OnInit {
 
-  @Input() stack: Stack;
+  //@Input() stack: Stack;
+  @Input() stack;
   @ViewChild('stackModule') modalStackModule: any;
 
   errorMessage: any = {};
@@ -70,15 +67,13 @@ export class StackDetailsComponent implements OnInit {
   workItemData: any = {};
   multilpeActionData: any = {};
 
-  private stackAnalysisRawData: any = {};
   private recommendations: Array<any> = [];
   private dependencies: Array<any> = [];
   private stackOverviewData: any = {};
 
   constructor(
-    private addWorkFlowService: AddWorkFlowService,
     private stackAnalysesService: StackAnalysesService,
-    private logger: Logger,
+    // private logger: Logger,
     private messages: GlobalConstants
   ) { }
 
@@ -237,6 +232,7 @@ export class StackDetailsComponent implements OnInit {
            working or stay on this screen to review progress.`;
           this.errorMessage.stack = '';
         }
+        console.log(this.recommendations);
       },
       error => {
         // Throw error when the service fails
@@ -245,9 +241,11 @@ export class StackDetailsComponent implements OnInit {
       });
   }
 
-  private showStackModal(event): void {
-    this.modalStackModule.open();
+  public showStackModal(): void {
+    console.clear();
+    console.log(this.recommendations);
     this.getStackAnalyses('8950acb76bc84235873d73d149cb9f61');
+    this.modalStackModule.open();
     // TODO : below hack needs to be removed
     // This hack was introduced as c3's chart was not properly rendered on load
     // but on triggering some random changes works fine

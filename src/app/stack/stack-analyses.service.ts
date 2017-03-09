@@ -1,7 +1,7 @@
-import { RECOMMENDER_API_URL } from './recommender-api';
-import { Injectable, Inject } from '@angular/core';
+// import { RECOMMENDER_API_URL } from './recommender-api';
+import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { Logger } from 'ngx-login-client';
+// import { Logger } from '../node_modules/ngx-login-client';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -14,10 +14,9 @@ export class StackAnalysesService {
 
   constructor(
     private http: Http,
-    private logger: Logger,
-    @Inject(RECOMMENDER_API_URL) apiUrl: string
+    // private logger: Logger,
   ) {
-    this.stackAnalysesUrl = apiUrl;
+    this.stackAnalysesUrl =  'http://api-bayesian.dev.rdu2c.fabric8.io/api/v1/'; //apiUrl;
   }
 
   getStackAnalyses(id: string): Observable<any> {
@@ -45,7 +44,7 @@ export class StackAnalysesService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    this.logger.error(errMsg);
+   // this.logger.error(errMsg);
     return Observable.throw(errMsg);
   }
 

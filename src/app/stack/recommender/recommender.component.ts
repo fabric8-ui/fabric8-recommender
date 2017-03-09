@@ -6,7 +6,8 @@ import { AddWorkFlowService } from '../stack-details/add-work-flow.service';
 @Component({
     selector: 'f8-recommender',
     templateUrl: './recommender.html',
-    styleUrls: ['./recommender.scss']
+    styleUrls: ['./recommender.scss'],
+    providers: [AddWorkFlowService]
 })
 /**
  * RecommenderComponent
@@ -107,7 +108,7 @@ export class RecommenderComponent implements OnChanges {
      *  Checks for which of the list item is clicked and transfers the call to 
      *  the specific function accordingly. 
      */
-    private handleDropDownClick(item: any, recommender: any, event: Event): void {
+    public handleDropDownClick(item: any, recommender: any, event: Event): void {
         if (item) {
             let identifier: string = item.identifier;
             if (identifier === 'CREATE_WORK_ITEM') {
@@ -150,7 +151,7 @@ export class RecommenderComponent implements OnChanges {
      * 2. Dismiss
      * 3. Restore
      */
-    private handleAllActionDropDownClick(item: any, event: Event): void {
+    public handleAllActionDropDownClick(item: any, event: Event): void {
         if (item) {
             let identifier: string = item.identifier;
             if (identifier === 'CREATE_WORK_ITEM') {
@@ -328,7 +329,7 @@ export class RecommenderComponent implements OnChanges {
         1. Opens a small popup
         2. Shows various options
     */
-    private handleRecommendationAction(element: HTMLElement): void {
+    public handleRecommendationAction(element: HTMLElement): void {
         let sibling: Element = element.nextElementSibling;
         this.removeAllDrop();
         if (sibling) {
@@ -340,14 +341,14 @@ export class RecommenderComponent implements OnChanges {
         Handles Work Item selection
         1. Toggles the selected area
      */
-    private handleWorkItemSelection(event: Event, recommendation: any): void {
+    public handleWorkItemSelection(event: Event, recommendation: any): void {
         let target: any = event.target;
         recommendation.isChecked = target.checked;
         this.handleCheckBoxChange(recommendation);
     }
 
 
-    private handleAllItemSelection(element: HTMLElement, event: Event): void {
+    public handleAllItemSelection(): void {
         this.isSelectAll = !this.isSelectAll;
         this.recommendationsList.forEach(recommendation => {
             recommendation.isChecked = this.isSelectAll;
@@ -362,7 +363,7 @@ export class RecommenderComponent implements OnChanges {
      *  'deactivate' - this classname gets added if any of the action needs to be disabled.
      *  so that it is disabled for the user to perform any action
      */
-    private getCurrentClass(item: any, recommendation: any): string {
+     public getCurrentClass(item: any, recommendation: any): string {
         let className: string = 'deactivate';
         let identifier: string = item.identifier;
 
@@ -378,7 +379,7 @@ export class RecommenderComponent implements OnChanges {
      * Checks if multiple work items can be created
      * returns true/false
      */
-    private canCreateAllWorkItems(): boolean {
+     public canCreateAllWorkItems(): boolean {
         if (this.newRecommendations.length > 0) {
             return this.newRecommendations.some(recommendation => recommendation.isDismissed === false || recommendation.isDismissed === undefined);
         }

@@ -34,7 +34,7 @@
     <!-- Header to handle multiple items -->
     <div class="select-all-container" *ngIf="recommendationsList.length > 0">
         <div class="list-view-pf-checkbox">
-            <input [checked]="isSelectAll" (change)="handleAllItemSelection(listGroupItem, $event)" type="checkbox" />
+            <input [checked]="isSelectAll" (change)="handleAllItemSelection()" type="checkbox" />
         </div>
     </div>
     <!-- Header to handle multiple items -->

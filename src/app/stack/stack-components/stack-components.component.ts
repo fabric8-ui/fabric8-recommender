@@ -61,7 +61,7 @@ export class StackComponents implements OnChanges {
     private direction: string = '';
     private angleUp: string = 'fa-angle-up';
     private angleDown: string = 'fa-angle-down';
-    private sortDirectionClass: string = this.angleDown;
+    public sortDirectionClass: string = this.angleDown;
 
     constructor() {
         this.fieldName = 'name';
@@ -102,8 +102,8 @@ export class StackComponents implements OnChanges {
     }
 
     private handleDependencies(dependencies: Array<any>): void {
-        if (this.dependencies) {
-            let length: number = this.dependencies.length;
+        if (dependencies) {
+            let length: number = dependencies.length;
             let dependency: any, eachOne: any;
             this.headers = [
                 {
@@ -127,9 +127,10 @@ export class StackComponents implements OnChanges {
                 }
             ];
 
+            this.dependenciesList = [];
             for (let i: number = 0; i < length; ++ i) {
                 dependency = {};
-                eachOne = this.dependencies[i];
+                eachOne = dependencies[i];
                 dependency[this.keys['name']] = eachOne['name'];
                 dependency[this.keys['currentVersion']] = eachOne['version'];
                 dependency[this.keys['latestVersion']] = eachOne['latest_version'] || 'NA';
@@ -147,7 +148,7 @@ export class StackComponents implements OnChanges {
      * Gets triggered everytime a value is typed in the filter box
      * Sets the received value to the fieldValue
      */
-    private handleKeyUpEvent(event: Event): void {
+     public handleKeyUpEvent(event: Event): void {
         let target: any = event.target;
         this.fieldValue = target.value;
     }
@@ -155,7 +156,7 @@ export class StackComponents implements OnChanges {
     /**
      * Handles the click after changing the filters.
      */
-    private handleDropDownClick(element: Element): void {
+     public handleDropDownClick(element: Element): void {
         if (element.classList.contains('open')) {
             element.classList.remove('open');
         } else {
@@ -163,7 +164,7 @@ export class StackComponents implements OnChanges {
         }
     }
 
-    private handleFilterFieldClick(element: Element, field: any, event: Event): void {
+    public handleFilterFieldClick(element: Element, field: any, event: Event): void {
         event.stopPropagation();
         this.currentFilter = field.name;
         this.fieldName = field.identifier;
@@ -180,7 +181,7 @@ export class StackComponents implements OnChanges {
      * This changes the tables entries either to ascending order or 
      * desending order in context to the field
      */
-    private handleTableOrderClick(header: any): void {
+     public handleTableOrderClick(header: any): void {
         if (header.isSortable) {
             this.orderByName = header.identifier;
             if (!header.direction || header.direction.toLowerCase() === 'down') {

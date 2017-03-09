@@ -1,13 +1,11 @@
 import {
     Component,
-    Input,
-    SimpleChange,
     ElementRef,
-    ViewEncapsulation,
-    CUSTOM_ELEMENTS_SCHEMA
+    ViewEncapsulation
 } from '@angular/core';
 
 import * as c3 from 'c3';
+// require('../../node_modules/c3/c3');
 
 /**
  * 
@@ -132,22 +130,6 @@ export class ChartComponent {
         return randomInput !== undefined && randomInput !== null;
     }
 
-    /* A utility method that gets a map and checks if all the values in the map are valid
-        Returns true if all are valid,
-        Returns False, otherwise
-        TODO: Check for various other input scenarios
-     */
-    private isValidInput(randomInput: any): boolean {
-        let flag: boolean = true;
-        for (let key in randomInput) {
-            if (!this.isValid(randomInput[key])) {
-                flag = false;
-                break;
-            }
-        }
-        return flag;
-    }
-
     /**
      * A utility method to traverse through teh input map, checks with the given config 
      *  Updates the  output map if input is present in config
@@ -166,7 +148,7 @@ export class ChartComponent {
     }
 
     // Checks for the changes made in the data and re-renders the charts accordingly
-    private ngOnChanges(changes: { [propertyName: string]: SimpleChange }): void {
+    public ngOnChanges(): void {
         try {
             this.__render(this.data, this.chartOptions, this.configs);
         } catch (err) {
