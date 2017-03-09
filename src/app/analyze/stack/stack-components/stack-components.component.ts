@@ -118,18 +118,12 @@ export class StackComponents implements OnChanges {
                     name: 'Latest Version',
                     identifier: this.keys['latestVersion']
                 }, {
-                    name: 'Date Added',
-                    identifier: this.keys['dateAdded']
-                }, {
                     name: 'Public Popularity',
                     identifier: this.keys['publicPopularity']
                 }, {
                     name: 'Enterprise Usage',
                     identifier: this.keys['enterpriseUsage'],
                     isSortable: true
-                }, {
-                    name: 'Team Usage',
-                    identifier: this.keys['teamUsage']
                 }
             ];
 
@@ -139,11 +133,9 @@ export class StackComponents implements OnChanges {
                 dependency[this.keys['name']] = eachOne['name'];
                 dependency[this.keys['currentVersion']] = eachOne['version'];
                 dependency[this.keys['latestVersion']] = eachOne['latest_version'] || 'NA';
-                dependency[this.keys['dateAdded']] = eachOne['dateAdded'] || 'NA';
                 dependency[this.keys['publicPopularity']] =
-                  eachOne['github_details'] ? eachOne['github_details'].stargazers_count : 'NA';
+                  eachOne['github_details'] ? (eachOne['github_details'].stargazers_count === -1? 'NA' :    eachOne['github_details'].stargazers_count) : 'NA';
                 dependency[this.keys['enterpriseUsage']] = eachOne['enterpriseUsage'] || 'NA';
-                dependency[this.keys['teamUsage']] = eachOne['teamUsage'] || 'NA';
 
                 this.dependenciesList.push(dependency);
             }
