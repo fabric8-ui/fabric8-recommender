@@ -48,6 +48,7 @@ import { GlobalConstants } from '../constants/constants.service';
 export class StackDetailsComponent implements OnInit {
   @Input() stack;
   @ViewChild('stackModule') modalStackModule: any;
+  public messages: any;
 
   errorMessage: any = {};
   stackAnalysesData: Array<any> = [];
@@ -72,8 +73,12 @@ export class StackDetailsComponent implements OnInit {
   constructor(
     private stackAnalysesService: StackAnalysesService,
     // private logger: Logger,
-    private messages: GlobalConstants
-  ) { }
+    private constants: GlobalConstants
+  ) {
+    this.constants.getMessages('stackDetails').subscribe((message) => {
+      this.messages = message;
+    });
+  }
 
   ngOnInit() {
     this.getStackAnalyses(this.stack.uuid);
@@ -89,10 +94,6 @@ export class StackDetailsComponent implements OnInit {
     this.stackOverviewData = {
       CVEdata: ['CVE-2014-0001', 'CVE-2014-12345', 'CVE-2013-78934']
     };
-
-    this.messages.getMessages('stackDetails').subscribe((messages) => {
-      console.log(messages);
-    });
   }
 
   /**
@@ -105,12 +106,6 @@ export class StackDetailsComponent implements OnInit {
       {
         itemName: 'Create WorkItem',
         identifier: 'CREATE_WORK_ITEM'
-      }, {
-        itemName: 'Dismiss Recommendation',
-        identifier: 'DISMISS'
-      }, {
-        itemName: 'Restore Recommendation',
-        identifier: 'RESTORE'
       }
     ];
   }
@@ -129,6 +124,12 @@ export class StackDetailsComponent implements OnInit {
           suggestion: 'Recommended',
           action: 'Add',
           message: key[0] + ' ' + missing[i][key[0]],
+          codebase: {
+            'repository': 'Exciting',
+            'branch': 'task-101',
+            'filename': 'package.json',
+            'linenumber': 1
+          },
           pop: this.getRecommendationActions()
         });
       }
@@ -141,6 +142,12 @@ export class StackDetailsComponent implements OnInit {
           suggestion: 'Recommended',
           action: 'Upgrade',
           message: key[0] + ' ' + version[i][key[0]],
+          codebase: {
+            'repository': 'Exciting',
+            'branch': 'task-101',
+            'filename': 'package.json',
+            'linenumber': 1
+          },
           pop: this.getRecommendationActions()
         });
       }
