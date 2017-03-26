@@ -85,6 +85,10 @@ export class StackDetailsComponent implements OnInit {
     this.setStackAnalysisChartData();
   }
 
+  public showStackModal(): void {
+    this.modalStackModule.open();
+  }
+
   /**
    * setStackAnalysisChartData - takes nothing and returns nothing
    * This function helps in setting the data that will be passed for
@@ -125,10 +129,10 @@ export class StackDetailsComponent implements OnInit {
           action: 'Add',
           message: key[0] + ' ' + missing[i][key[0]],
           codebase: {
-            'repository': 'Exciting',
-            'branch': 'task-101',
+            'repository': 'Test_Repo',
+            'branch': 'task-1234',
             'filename': 'package.json',
-            'linenumber': 1
+            'linenumber': 35
           },
           pop: this.getRecommendationActions()
         });
@@ -238,10 +242,6 @@ export class StackDetailsComponent implements OnInit {
         this.errorMessage.message = <any>error.message;
         this.errorMessage.stack = <any>error.stack;
       });
-  }
-
-  public showStackModal(): void {
-    this.modalStackModule.open();
   }
 
 }
