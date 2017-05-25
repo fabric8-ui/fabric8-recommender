@@ -6,6 +6,7 @@ export class ApiLocatorService {
   readonly DEFAULT_API_ENV_VAR_NAMES = new Map<string, string>(
     [
       ['wit', 'FABRIC8_WIT_API_URL'],
+      ['realm', 'FABRIC8_REALM'],
       ['recommender', 'FABRIC8_RECOMMENDER_API_URL']
     ]
   );
@@ -29,6 +30,10 @@ export class ApiLocatorService {
 
   get witApiUrl(): string {
     return this.buildApiUrl('wit');
+  }
+
+  get realm(): string {
+    return this.envVars.get('realm');
   }
 
   get recommenderApiUrl(): string {
