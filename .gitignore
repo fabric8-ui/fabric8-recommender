@@ -45,6 +45,7 @@ npm-debug.log
 
 # Dist #
 /dist
+/dist-watch
 /public/__build__/
 /src/*/__build__/
 /__build__/**
@@ -62,6 +63,7 @@ npm-debug.log
 .idea/
 *.swp
 .vscode/
+dist-watch/
 
 # NPM #
 

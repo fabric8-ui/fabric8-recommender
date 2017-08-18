@@ -1,356 +1,236 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ViewEncapsulation,
-  ViewChild
-} from '@angular/core';
+import {Component, Input, OnChanges, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
 
-import { Observable } from 'rxjs';
-
-// import { Logger } from '../../node_modules/ngx-login-client';
-
-import { StackAnalysesService } from '../stack-analyses.service';
-
-import { GlobalConstants } from '../constants/constants.service';
-import { getStackRecommendations, getResultInformation } from '../utils/stack-api-utils';
+import {StackAnalysesService} from '../stack-analyses.service';
+import {getStackReportModel} from '../utils/stack-api-utils';
+import {StackReportModel, ResultInformationModel, UserStackInfoModel, ComponentInformationModel, RecommendationsModel} from '../models/stack-report.model';
 
 @Component({
-  selector: 'stack-details',
-  templateUrl: './stack-details.component.html',
-  styleUrls: ['./stack-details.component.scss'],
-  providers: [
-    StackAnalysesService
-  ],
-  encapsulation: ViewEncapsulation.None
+    selector: 'stack-details',
+    templateUrl: './stack-details.component.html',
+    providers: [StackAnalysesService],
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['./stack-details.component.scss'],
 })
-/**
- * StackDetailsComponent - Provides the detailed analysis for the given codebase
- * by giving recommendation, overview and information about the dependencies of their packages
- *
- * implements OnInit
- *
- * Selector: 'stack-details'
- * Template: stack-details.component.html
- * Style: stack-details.component.scss
- *
- * Services:
- * 1. AddWorkFlowService
- * 2. Logger
- * 3. StackAnalysesService
- *
- * Parent component that includes,
- * 1. Recommendations
- * 2. Overview
- * 3. Components/Dependencies
- *
- * Hits the Stack Analysis Service, gets the response
- * Passes the tailored response to each of the children.
- */
-export class StackDetailsComponent implements OnInit {
-  @Input() stack;
-  @Input() displayName;
-  @Input() repoInfo;
-  @Input() buildNumber;
-  @Input() appName;
 
-  @ViewChild('stackModule') modalStackModule: any;
-  public messages: any;
+export class StackDetailsComponent implements OnChanges {
+    @Input() stack: string;
+    @Input() displayName;
+    @Input() repoInfo;
+    @Input() buildNumber;
+    @Input() appName;
+    @Input() stackResponse;
 
-  errorMessage: any = {};
-  stackAnalysesData: Array<any> = [];
-  componentAnalysesData: any = {};
-  mode: string = 'Observable';
+    @ViewChild('stackModule') modalStackModule: any;
 
-  componentDataObject: any = {};
-  componentsDataTable: Array<any> = [];
+    public errorMessage: any = {};
+    public modalHeader: string = null;
+    public userStackInformation: UserStackInfoModel;
+    public componentLevelInformation: any = {};
+    public userComponentInformation: Array<ComponentInformationModel> = [];
+    public companionLevelRecommendation: any = {};
+    public dataLoaded: boolean = false;
+    public recommendationsArray: Array<RecommendationsModel> = [];
+    public stackLevelOutliers: any = {};
 
-  currentIndex: number = 0;
+    public companionLevel: any = {};
+    public componentLevel: any = {};
 
-  similarStacks: Array<any> = [];
-  workItemRespMsg: string = '';
+    public componentFilterBy: string = '';
+    public customClass: string = 'customClass';
+    public analysis: any = {};
 
-  workItemData: any = {};
-  multilpeActionData: any = {};
 
-  buildId: string = '';
-  isLoading: boolean = true;
+    public feedbackConfig: any = {};
 
-  modalHeader: string = null;
+    public tabs: Array<any> = [];
 
-  private stackReport = {};
-  private recommendations: Array<any> = [];
-  private dependencies: Array<any> = [];
-  private stackOverviewData: any = {};
-  private paths: Array<string> = [];
-  private currentManifestPath: string = '';
+    private userStackInformationArray: Array<UserStackInfoModel> = [];
+    private totalManifests: number;
 
-  constructor(
-    private stackAnalysesService: StackAnalysesService,
-    private constants: GlobalConstants
-  ) {
-    this.constants.getMessages('stackDetails').subscribe((message) => {
-      this.messages = message;
-    });
-  }
+    private stackId: string;
 
-  ngOnInit() {
-    if (this.stack) {
-      this.setBuildId();
-    }
-    this.displayName = this.displayName || 'Stack Reports';
-  }
-
-  public showStackModal(event: Event): void {
-    event.preventDefault();
-    this.modalStackModule.open();
-  }
-
-  /**
-   * Gets triggered on close of modal,
-   * Clears the existing states to make it proper on open
-   */
-  public handleModalClose(): void {
-    this.resetFields();
-  }
-
-  private resetFields(): void {
-    this.stackReport = {};
-    this.recommendations = [];
-    this.stackOverviewData = [];
-    this.dependencies = [];
-  }
-
-  /**
-   * getRecommendationActions - takes nothing and returns an Array<any>
-   * This function returns the static Array of objects that are to be used
-   * as actions for each recommendation.
-   */
-  private getRecommendationActions(): Array<any> {
-    return [
-      {
-        itemName: 'Create WorkItem',
-        identifier: 'CREATE_WORK_ITEM'
-      }
-    ];
-  }
-
-  private setBuildId(): void {
-    let currentStackUrl: string = this.stack;
-    let splitForBuildId: string = currentStackUrl.split('/stack-analyses/')[1];
-    if (splitForBuildId) {
-      let splitLen: number = splitForBuildId.length;
-      if (splitForBuildId[splitLen - 1] === '/') {
-        splitForBuildId = splitForBuildId.substring(0, splitLen - 1);
-      }
-      this.buildId = splitForBuildId;
-    }
-  }
-
-  /**
-   * setRecommendations - takes missing (Array), version (Array) and returns nothing.
-   * This function gets the missing packages information and version mismatch information
-   * Displays the information accordingly on screen
-   */
-  private setRecommendations(path: string, recommendation: any): void {
-    let missing: Array<any> = recommendation['missing'] || [];
-    let version: Array<any> = recommendation['version'] || [];
-    let stackName: string = recommendation['stackName'] || 'An existing stack';
-    let fileName: string = this.stackReport[path]['stackOverviewData']['fileName'];
-    let recommendations = [];
-    for (let i in missing) {
-      if (missing.hasOwnProperty(i)) {
-        let key: any = Object.keys(missing[i]);
-        recommendations.push({
-          suggestion: 'Recommended',
-          action: 'Add',
-          message: key[0] + ' : ' + missing[i][key[0]],
-          subMessage: stackName + ' has this dependency included',
-          key: key[0],
-          workItem: {
-            action: 'Add ' + key[0] + ' with version ' + missing[i][key[0]],
-            message: 'Stack analytics has identified a potential missing library. It\'s ' +
-            'recommended that you add "' + key[0] + '" with version ' + missing[i][key[0]] +
-            ' to your application as many other Vert.x OpenShift applications have it included',
-            codebase: {
-              'repository': 'Test_Repo',
-              'branch': 'task-1234',
-              'filename': fileName,
-              'linenumber': 1
-            }
-          },
-          pop: this.getRecommendationActions()
-        });
-      }
+    public showStackModal(event: Event): void {
+        event.preventDefault();
+        this.modalStackModule.open();
     }
 
-    for (let i in version) {
-      if (version.hasOwnProperty(i)) {
-        let key: any = Object.keys(version[i]);
-        recommendations.push({
-          suggestion: 'Recommended',
-          action: 'Change',
-          message: key[0] + ' : ' + version[i][key[0]],
-          subMessage: stackName + ' has a different version of dependency',
-          workItem: {
-            action: 'Change ' + key[0] + ' with version ' + version[i][key[0]],
-            message: 'Stack analytics has identified a potential version change. It\'s ' +
-            'recommended that you change "' + key[0] + '" with version ' + version[i][key[0]] +
-            ' to your application as many other Vert.x OpenShift applications have it included',
-            codebase: {
-              'repository': 'Exciting',
-              'branch': 'task-101',
-              'filename': fileName,
-              'linenumber': 1
-            }
-          },
-          pop: this.getRecommendationActions()
-        });
-      }
+    /**
+     * Gets triggered on close of modal,
+     * Clears the existing states to make it proper on open
+     */
+    public handleModalClose(): void {
+        this.resetFields();
     }
 
-    this.stackReport[path]['recommendations'] = recommendations;
-  }
-
-  private setDependencies(path: string, stackData: any): void {
-    this.stackReport[path]['dependencies'] = stackData['components'];
-  }
-
-  private setOverviewData(path: string, stackData: any): void {
-    let components = stackData['components'];
-    // set the default values - start
-    let noOfComponents: number = components ? components.length : 0;
-    let totalCycloComplexity: number = 0;
-    let avgCycloComplexity: any = 'NA';
-    let validComponentsWithCycloValue: number = 0;
-    let totalNoOfLines: number = 0;
-    let totalNoOfFiles: number = 0;
-    let cvssObj: any = {
-      id: '',
-      value: -1 // -1 to say that no package is vulnerable
-    };
-    let licenseList: Array<string> = [];
-    // set the default values - end
-    components.forEach(item => {
-      totalNoOfFiles += item.code_metrics.total_files;
-      totalNoOfLines += item.code_metrics.code_lines;
-      if (item.code_metrics.average_cyclomatic_complexity !== -1) {
-        totalCycloComplexity += item.code_metrics.average_cyclomatic_complexity;
-        validComponentsWithCycloValue += 1;
-      }
-
-      if (item.security && item.security.vulnerabilities && item.security.vulnerabilities[0].cvss) {
-        let value = parseFloat(item.security.vulnerabilities[0].cvss);
-        if (value > cvssObj.value) {
-          cvssObj.value = value;
-          cvssObj.id = item.security.vulnerabilities[0].id;
+    public tabSelection(tab: any): void {
+        tab['active'] = true;
+        let currentIndex: number = tab['index'];
+        let recommendations: RecommendationsModel = this.recommendationsArray[currentIndex];
+        let alternate: number = 0, companion: number = 0;
+        if (recommendations) {
+            this.stackLevelOutliers = {
+                'usage': recommendations.usage_outliers
+            };
+            this.companionLevelRecommendation = {
+                dependencies: recommendations.companion
+            };
+            alternate = recommendations.alternate ? recommendations.alternate.length : 0;
+            companion = recommendations.companion ? recommendations.companion.length : 0;
         }
-      }
-      if (item.licenses && item.licenses.length) {
-        licenseList = [...licenseList, ...item.licenses];
-      }
-    });
-    if (validComponentsWithCycloValue > 0) {
-      avgCycloComplexity =
-        Math.round(totalCycloComplexity / validComponentsWithCycloValue * 1000) / 1000;
+        let total: number = 0;
+        let analyzed: number = 0;
+        let unknown: number = 0;
+
+        if (tab.content && tab.content.user_stack_info) {
+            let userStackInfo: UserStackInfoModel = tab.content.user_stack_info;
+            if (userStackInfo.dependencies) {
+                analyzed = tab.content.user_stack_info.dependencies.length;
+            }
+            if (userStackInfo.analyzed_dependencies) {
+                total = userStackInfo.analyzed_dependencies.length;
+            }
+            if (userStackInfo.unknown_dependencies) {
+                unknown = userStackInfo.unknown_dependencies.length;
+            }
+        }
+
+        this.analysis = {
+            stackLevel: 'Total: ' +  total + ' | Analyzed: ' + analyzed + ' | Unknown: ' + unknown,
+            alternate: '[' + alternate + ' alternate components match your stack composition and may be more appropriate]',
+            companion: '[' + companion + ' additional components are often used by similar stacks]'
+        };
+        this.componentLevelInformation = {
+            recommendations: recommendations,
+            dependencies: tab.content.user_stack_info.dependencies,
+            manifestinfo: tab.content.manifest_name
+        };
     }
-    this.stackReport[path]['stackOverviewData'] = {
-      noOfComponents: noOfComponents,
-      totalNoOfFiles: totalNoOfFiles,
-      totalNoOfLines: totalNoOfLines,
-      avgCycloComplexity: avgCycloComplexity,
-      cvss: cvssObj,
-      licenseList: licenseList,
-      fileName: stackData['manifest']
-    };
-  }
 
-  /**
-   * getStackAnalyses - takes an id (string) and returns nothing.
-   * This hits the service and gets the response and passes it on to different functions.
-   */
-  private getStackAnalyses(url: string): void {
-    if (!url) return;
-    this.isLoading = true;
-    let stackAnalysesData: any = {};
-    this.errorMessage = {};
-    this.stackAnalysesService
-      .getStackAnalyses(url)
-      .subscribe(data => {
-        // Enter the actual scene only if the data is valid and the data
-        // has something inside.
-        this.clearLoader();
-        this.modalHeader = 'Updated just now';
+    ngOnChanges(): void {
+        this.resetFields();
+        this.stackId = this.stack && this.stack.split('/')[this.stack.split('/').length - 1];
+        // this.init(this.stack);
+        this.initFeedback();
+        this.componentLevel = {
+            header: 'Analysis of your application stack',
+            subHeader: 'Recommended alternative dependencies'
+        };
+        this.companionLevel = {
+            header: 'Possible companion dependencies',
+            subHeader: 'Consider theses additional dependencies'
+        };
+        this.displayName = this.displayName || 'Stack Report';
+    }
+
+    public handleChangeFilter(filterBy: any): void {
+        this.componentFilterBy = filterBy.filterBy;
+    }
+
+    constructor(private stackAnalysisService: StackAnalysesService) {}
+
+    private handleError(error: any): void {
+        this.errorMessage = error;
+        this.modalHeader = error.title;
+        this.dataLoaded = true;
+    }
+
+    private initFeedback(): void {
+        this.feedbackConfig = {
+            name: 'Feedback',
+            stackId: this.stackId,
+            title: 'Tell us your experience',
+            poll: [{
+                question: 'How useful do you find this?',
+                type: 'rating'
+            }, {
+                question: 'How likely do you recommend this to others?',
+                type: 'rating'
+            }, {
+                question: 'Tell us more',
+                type: 'text'
+            }]
+        };
+    }
+
+    private resetFields(): void {
+        console.log('Reset');
+        console.log(this.tabs);
+        this.tabs.length = 0;
+        this.dataLoaded = false;
+        this.errorMessage = null;
+        this.recommendationsArray = [];
+        this.stackLevelOutliers = {};
+        this.componentLevelInformation = {};
+        this.companionLevelRecommendation = {};
+        // this.dataLoaded = false;
+    }
+
+    private handleResponse(data: any): void {
+        this.errorMessage = null;
+        this.tabs = [];
         if (data && (!data.hasOwnProperty('error') && Object.keys(data).length !== 0)) {
-          let result: any;
-          let components: Array<any> = [];
-
-          let stackDataObservable: Observable<any> = getResultInformation(data);
-          let recObservable: Observable<any> = getStackRecommendations(data);
-
-          if (!recObservable) {
-            recObservable = Observable.create((observer) => {
-              observer.next(null);
-              observer.complete();
-            });
-          }
-          Observable
-            .zip(
-            stackDataObservable, recObservable
-            )
-            .subscribe(([stackDatas, recommendations]) => {
-              if (stackDatas) {
-                for (let path in stackDatas) {
-                  if (path && stackDatas.hasOwnProperty(path)) {
-                    this.stackReport[path] = {};
-                    // Call the stack-components with the components information so that
-                    // It can parse the necessary information and show relevant things.
-                    this.setDependencies(path, stackDatas[path]);
-
-                    // set the overview data
-                    this.setOverviewData(path, stackDatas[path]);
-                  }
-                }
-              }
-              if (recommendations) {
-                for (let path in recommendations) {
-                  if (path && path !== 'undefined' && path !== 'widget_data'
-                  && recommendations.hasOwnProperty(path)) {
-                    // Call the recommendations with the recommendations response object
-                    this.setRecommendations(path, recommendations[path]);
-                  }
-                }
-              }
-              this.paths = Object.keys(this.stackReport);
-              this.currentManifestPath = this.paths[0];
-              this.selectedManifestPath();
-              console.log('Final stack Report object', this.stackReport);
+            let resultInformation: Observable<StackReportModel> = getStackReportModel(data);
+            resultInformation.subscribe((response) => {
+                console.log(response);
+                let result: Array<ResultInformationModel> = response.result;
+                this.totalManifests = result.length;
+                this.userStackInformationArray = result.map((r) => r.user_stack_info);
+                result.forEach((r, index) => {
+                    console.log('HEre');
+                    this.tabs.push({
+                        title: r.manifest_file_path,
+                        content: r,
+                        index: index
+                    });
+                    this.recommendationsArray.push(r.recommendation);
+                });
+                this.modalHeader = 'Updated just now';
+                this.dataLoaded = true;
+                this.tabSelection(this.tabs[0]);
             });
         } else {
-          // Set an error if the data is invalid or not proper.
-          this.errorMessage.message = `This could take a while. Return to pipeline to keep
-           working or stay on this screen to review progress.`;
-          this.modalHeader = 'Updating ...';
+            this.handleError({
+                message: data.error,
+                code: data.statusCode,
+                title: 'Updating ...'
+            });
         }
-      },
-      error => {
-        this.clearLoader();
-        // Throw error when the service fails
-        this.errorMessage.message = error.message;
-        this.errorMessage.status = error.status;
-        this.errorMessage.statusText = error.statusText;
-        this.modalHeader = 'Report failed ...';
-      });
-  }
+    }
 
-  private clearLoader(): void {
-    this.isLoading = false;
-  }
-
-  private selectedManifestPath(): void {
-    this.dependencies = this.stackReport[this.currentManifestPath]['dependencies'];
-    this.stackOverviewData = this.stackReport[this.currentManifestPath]['stackOverviewData'];
-    this.recommendations = this.stackReport[this.currentManifestPath]['recommendations'];
-  }
-
+    private init(): void {
+        if (this.stackResponse) {
+            // Change this to some other logic
+            setTimeout(() => {
+                this.handleResponse(this.stackResponse);
+            }, 1000);
+        } else {
+            if (this.stack && this.stack !== '') {
+                this.stackAnalysisService
+                    .getStackAnalyses(this.stack)
+                    .subscribe((data) => {
+                        this.handleResponse(data);
+                    },
+                    error => {
+                        // this.handleError(error);
+                        console.log(error);
+                        let title: string = '';
+                        if (error.status >= 500) {
+                            title = 'Something unexpected happened';
+                        } else if (error.status === 404) {
+                            title = 'You are looking for something which isn\'t there';
+                        } else if (error.status === 401) {
+                            title = 'You don\'t seem to have sufficient privileges to access this';
+                        }
+                        title = 'Report failed ...'; // Check if just this message is enough.
+                        this.handleError({
+                            message: error.statusText,
+                            status: error.status,
+                            title: title
+                        });
+                        console.log(this.errorMessage);
+                    });
+            }
+        }
+    }
 }

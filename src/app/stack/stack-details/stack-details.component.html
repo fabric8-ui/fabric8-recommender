@@ -1,66 +1,97 @@
-<div class="container stack-details">
-  <div class="row">
-    <a class="stack-reports-btn" (click)="showStackModal($event)">{{displayName}}</a>
-    <modal #stackModule title="Report title on Application - {{appName}}, Build #{{buildNumber}}" modalClass="modal-lg modal-fullscreen" (onClose)="handleModalClose();" (onOpen)="getStackAnalyses(stack);">
+<div class="stack-report">
+  <a class="stack-reports-btn" (click)="showStackModal($event)">{{displayName}}</a>
+  <modal #stackModule title="Report title on Application - {{appName}}, Build #{{buildNumber}}" modalClass="modal-lg modal-fullscreen modal-width-class" (onClose)="handleModalClose();" (onOpen)="init();">
       <modal-header>
           {{modalHeader}}
       </modal-header>
       <modal-content>
-          <div *ngIf="isLoading" class="pre-loader">
-            <div class="pre-loader-spinner spinner spinner-lg"></div>
-          </div>
-          <div [hidden]="errorMessage.message">
-            <!-- Dropdown-->
-            <span>Path to manifest file: </span>
-            <select name="manifestSelect" [(ngModel)]="currentManifestPath" (change)="selectedManifestPath()" class="combobox form-control">
-              <option *ngFor="let path of paths" [ngValue]="path">{{ path }}</option>
-            </select>
-            <!-- Recommender -->
-            <div>
-              <f8-recommender [data]="repoInfo && repoInfo" [recommendations]="recommendations"></f8-recommender>
-            </div>
-            <!-- Stack Overview -->
-            <div>
-              <overview-stack [stackOverviewData]="stackOverviewData"></overview-stack>
-            </div>
-            <div>
-              <f8-stack-components [dependencies]="dependencies && dependencies"></f8-stack-components>
-            </div>
-          </div>
-          <div class="error-msg blank-slate-pf" [hidden]="!errorMessage.message">
-            <div [hidden]="!errorMessage.status">
-              <div class="warning-icon blank-slate-pf-icon">
-                <i class="pficon-warning-triangle-o"></i>
-              </div>
-              <h1>
-                {{messages && messages['report_failure']}}
-                <span *ngIf="errorMessage.status">{{messages && messages['error_code']}} {{errorMessage.status}}</span>
-              </h1>
-              <p>
-                {{messages && messages['error_text']}}{{errorMessage.message}}
-              </p>
-            </div>
-            <div [hidden]="errorMessage.status">
-              <div class="container-progress progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
-                  <span>50%</span>
+  <div *ngIf="!error">
+    <tabset *ngIf="dataLoaded">
+        <tab *ngFor="let tabz of tabs"
+            [heading]="tabz.title"
+            (select)="tabSelection(tabz)"
+            (removed)="removeTabHandler(tabz)"
+            [customClass]="tabz.customClass">
+            <accordion>
+              <accordion-group
+                   [isOpen]="true"
+                   [panelClass]="customClass"
+                   [isDisabled]="true">
+                    <div accordion-heading>
+                      <div class="accordion-heading" accordion-heading>
+                        Stack report
+                      </div>
+                      <div class="accordion-sub-heading">
+                        [Components: <b>{{analysis && analysis.stackLevel}}</b>]
+                      </div>
+                    </div>
+                    <stack-level-information (changeFilter)="handleChangeFilter($event)" [outliers]="stackLevelOutliers" [userStack]="tabz && tabz.content && tabz.content.user_stack_info"></stack-level-information>
+              </accordion-group>
+              <accordion-group #grouped [isOpen]="true" [panelClass]="customClass">
+                <div accordion-heading>
+                  <div class="accordion-heading" accordion-heading>
+                    Detail analysis of your stack components
+                  </div>
+                  <i class="pull-right accordion-indicator float-xs-right glyphicon"
+                    [ngClass]="{'glyphicon-chevron-down': grouped?.isOpen, 'glyphicon-chevron-right': !grouped?.isOpen}"></i>
+                  <div class="accordion-sub-heading">
+                    <b>{{analysis && analysis.alternate}}</b>
+                  </div>
                 </div>
-              </div>
-              <h3>
-                {{messages && messages['report_loading']}}
-              </h3>
-              <p>{{errorMessage.message}}</p>
-            </div>
-            <div [hidden]="errorMessage.status" class="blank-slate-pf-secondary-action">
-              <button class="btn btn-default" (click)="stackModule.close()">{{messages && messages['cancel']}}</button>
-              <button class="btn btn-primary" (click)="stackModule.close()">{{messages && messages['load_and_return_to_pipeline']}}</button>
-            </div>
-            <div [hidden]="!errorMessage.status" class="blank-slate-pf-secondary-action">
-              <button class="btn btn-primary" (click)="stackModule.close()">{{messages && messages['return_to_pipeline']}}</button>
-            </div>
-          </div>
-      </modal-content>
-    </modal>
+                <component-level-information [data]="repoInfo" [filterBy]="componentFilterBy" [header]="componentLevel.header" [subHeader]="componentLevel.subHeader" [component]="componentLevelInformation"></component-level-information>
+              </accordion-group>
+              <accordion-group #companion [panelClass]="customClass">
+                <div accordion-heading>
+                  <div class="accordion-heading" accordion-heading>
+                    Additional components recommended by Openshift IO
+                  </div>
+                  <i class="pull-right accordion-indicator float-xs-right glyphicon"
+                    [ngClass]="{'glyphicon-chevron-down': companion?.isOpen, 'glyphicon-chevron-right': !companion?.isOpen}"></i>
+                  <div class="accordion-sub-heading">
+                    <b>{{analysis && analysis.companion}}</b>
+                  </div>
+                </div>
+                <component-level-information [data]="repoInfo" [header]="companionLevel.header" [subHeader]="companionLevel.subHeader" [isCompanion]="true" [component]="companionLevelRecommendation"></component-level-information>
+              </accordion-group>
+            </accordion>
+        </tab>
+    </tabset>
   </div>
+  <div *ngIf="!dataLoaded" class="pre-loader">
+    <div class="pre-loader-spinner spinner spinner-lg"></div>
+  </div>
+  <div class="error-msg blank-slate-pf" *ngIf="errorMessage">
+      <div [hidden]="!errorMessage.status">
+        <div class="warning-icon blank-slate-pf-icon">
+          <i class="pficon-warning-triangle-o"></i>
+        </div>
+        <h1>
+          {{messages && messages['report_failure']}}
+          <span *ngIf="errorMessage.status">{{messages && messages['error_code']}} {{errorMessage.status}}</span>
+        </h1>
+        <p>
+          {{messages && messages['error_text']}}{{errorMessage.message}}
+        </p>
+      </div>
+      <div [hidden]="errorMessage.status">
+        <div class="container-progress progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+            <span>50%</span>
+          </div>
+        </div>
+        <h3>
+          Report is loading...
+        </h3>
+        <p>{{errorMessage.message}}</p>
+      </div>
+      <div [hidden]="errorMessage.status" class="blank-slate-pf-secondary-action">
+        <button class="btn btn-default" (click)="stackModule.close()">Cancel</button>
+        <button class="btn btn-primary" (click)="stackModule.close()">Return to Pipeline</button>
+      </div>
+      <div [hidden]="!errorMessage.status" class="blank-slate-pf-secondary-action">
+        <button class="btn btn-primary" (click)="stackModule.close()">Return to Pipeline</button>
+      </div>
+    </div>
+  </modal-content>
+</modal>
 </div>
-

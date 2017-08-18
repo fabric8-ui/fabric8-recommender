@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute, ParamMap} from '@angular/router';
 
 @Component({
     selector: 'f8-app',
@@ -6,7 +7,11 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent {
-    public stackUrl: string = 'https://recommender.api.openshift.io/api/v1/stack-analyses/2106725f66d04349b2f42fc185c04714';
-    // public stackUrl: string = 'http://localhost:32000/api/v1/stack-analyses/ed6fc94dbe63454093c8586e5bb811dd';
+export class AppComponent implements OnInit {
+    public stackUrl: string = 'https://recommender.api.openshift.io/api/v1/stack-analyses/e80bac1847b3499e9f7b929d6b927883';
+
+    constructor() {}
+    ngOnInit(): void {
+        console.log('Inside ngInit');
+    }
 }
