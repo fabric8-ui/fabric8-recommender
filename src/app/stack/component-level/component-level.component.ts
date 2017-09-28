@@ -1,16 +1,17 @@
-import {Component, Input, OnChanges} from '@angular/core';
-
+import { Component, Input, OnChanges, ViewChildren, QueryList } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import { Space, Contexts } from 'ngx-fabric8-wit';
+import { PopoverDirective } from 'ngx-bootstrap';
 
 import { ComponentInformationModel, RecommendationsModel, OutlierInformationModel, StackLicenseAnalysisModel } from '../models/stack-report.model';
 import { AddWorkFlowService } from '../stack-details/add-work-flow.service';
+import { StackAnalysesService } from '../stack-analyses.service';
 
 @Component({
     selector: 'component-level-information',
     styleUrls: ['./component-level.component.less'],
-    providers: [AddWorkFlowService],
+    providers: [ AddWorkFlowService, StackAnalysesService ],
     templateUrl: './component-level.component.html'
 })
 
@@ -26,6 +27,8 @@ export class ComponentLevelComponent implements OnChanges {
 
     @Input() data;
 
+    @ViewChildren('pop') pop: QueryList<PopoverDirective>;
+
     public workItemResponse: Array<any> = [];
     public dependencies: Array<ComponentInformationModel> = [];
     public recommendations: RecommendationsModel;
@@ -33,6 +36,7 @@ export class ComponentLevelComponent implements OnChanges {
     public angleDown: string = 'fa-angle-down';
     public sortDirectionClass: string = this.angleDown;
     public licenseAnalysis: StackLicenseAnalysisModel;
+    public intentString: string;
 
     private dependenciesList: Array<any> = [];
     private headers: Array<any> = [];
@@ -52,11 +56,13 @@ export class ComponentLevelComponent implements OnChanges {
 
     private spaceName: string;
     private userName: string;
+    private componentForIntent: string;
 
 
     constructor(
         private addWorkFlowService: AddWorkFlowService,
-        private context: Contexts
+        private context: Contexts,
+        private stackAnalysesService: StackAnalysesService
     ) {
         this.messages = {
             'title': 'Recommendations',
@@ -72,7 +78,9 @@ export class ComponentLevelComponent implements OnChanges {
             'no_recommendations_suggestion': ' For your stack there are currently no recommendations. Below is some general information about it.',
             'toastDisplay': {
                 'text1': 'Workitem with ID ',
-                'text2': ' has been added to the backlog.'
+                'text2': ' has been added to the backlog.',
+                'text3': 'Successfully added Intent(s) for the component ',
+                'text4': 'Failed to add Intent(s) for the component '
             },
             'create_work_item_error': 'There was a error while creating work item.',
             'default_stack_name': 'An existing stack',
@@ -263,7 +271,7 @@ export class ComponentLevelComponent implements OnChanges {
         }
     }
 
-    isNormalLicense(dependency) {
+    public isNormalLicense(dependency) {
         if (dependency.license_analysis &&
             dependency.license_analysis.licensestatus &&
             (dependency.license_analysis.licensestatus.toLowerCase() === 'outlier' ||
@@ -274,26 +282,72 @@ export class ComponentLevelComponent implements OnChanges {
         return true;
     }
 
-    isOutliedLicense(dependency: any, licenseToCheck: string): boolean {
+    public isOutliedLicense(dependency: any, licenseToCheck: string): boolean {
         if (dependency.license_analysis.outliedLicense === licenseToCheck) {
             return true;
         }
         return false;
     }
 
-    isUnknownLicense(dependency: any, licenseToCheck: string): boolean {
+    public isUnknownLicense(dependency: any, licenseToCheck: string): boolean {
         if (dependency.license_analysis.unknownLicense === licenseToCheck) {
             return true;
         }
         return false;
     }
 
-    isConflictLicense(dependency: any, licenseToCheck: string): boolean {
+    public isConflictLicense(dependency: any, licenseToCheck: string): boolean {
         if (dependency.license_analysis.conflictingLicenses[0]['license1'] === licenseToCheck ||
             dependency.license_analysis.conflictingLicenses[0]['license2'] === licenseToCheck) {
             return true;
         }
         return false;
+    }
+
+    public showIntentPopover(component) {
+        this.componentForIntent = component;
+    }
+
+    public onAddIntent(intentString): void {
+        let currentComponent: string = this.componentForIntent;
+        this.pop.toArray().forEach((p: any) => {
+            if (p._popover._elementRef.nativeElement.getAttribute('id') === 'pop-' +  this.componentForIntent) {
+                p._popover.hide();
+            }
+        });
+        let intentArray = intentString ? intentString.split(',') : [];
+        intentArray = intentArray.map(item => item.trim());
+        let objToSave = {
+            'component': currentComponent,
+            'intent': intentArray
+        };
+        if (intentArray.length) {
+            this.stackAnalysesService.saveIntent(objToSave)
+            .subscribe((response) => {
+                response = JSON.parse(response._body);
+                console.log(response);
+                if (response.status === 'success') {
+                    this.displayAddIntentResponse(currentComponent, true);
+                } else {
+                    this.displayAddIntentResponse(currentComponent, false);
+                }
+            });
+        }
+    }
+
+    public onPopoverHidden() {
+        this.componentForIntent = '';
+        this.intentString = '';
+    }
+
+    public closeIntentPopover() {
+        this.pop.toArray().forEach((p: any) => {
+            if (p._popover._elementRef.nativeElement.getAttribute('id') === 'pop-' +  this.componentForIntent) {
+                this.componentForIntent = '';
+                this.intentString = '';
+                p._popover.hide();
+            }
+        });
     }
 
     ngOnChanges(): void {
@@ -626,6 +680,26 @@ export class ComponentLevelComponent implements OnChanges {
         this.workItemResponse.push(notification);
     }
 
-
+    /**
+     * displayAddIntentResponse - takes a component string and a boolean and returns nothing
+     * Displays the response received from the addition of new intent
+     */
+    private displayAddIntentResponse(component: string, isSuccess: boolean): void {
+        let notification = {
+            iconClass: '',
+            alertClass: '',
+            text: null
+        };
+        if (isSuccess) {
+            notification.iconClass = 'pficon-ok';
+            notification.alertClass = 'alert-success';
+            notification.text = this.messages.toastDisplay.text3 + component;
+        } else {
+            notification.iconClass = 'pficon-error-circle-o';
+            notification.alertClass = 'alert-danger';
+            notification.text = this.messages.toastDisplay.text4 + component;
+        }
+        this.workItemResponse.push(notification);
+    }
 
 }

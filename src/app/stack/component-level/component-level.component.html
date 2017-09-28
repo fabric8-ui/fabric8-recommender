@@ -92,7 +92,21 @@
                             <span ellipsis>{{used_by.name}}</span> <i class="fa fa-star used-by-icon" aria-hidden="true"></i>{{used_by.stars}}
                         </span>
                     </td>
-                    <td ellipsis>{{dependency.categories}}</td>
+                    <td ellipsis class="user-intent-wrapper">
+                        {{dependency.categories}}
+                        <span 
+                            class="fa fa-plus user-intent-btn"
+                            (click)="showIntentPopover(dependency.name)"
+                            [popover]="addIntentTemplate"
+                            popoverTitle="Add Intent for '{{dependency.name}}'"
+                            placement="bottom"
+                            [outsideClick]="true"
+                            container="body"
+                            #pop="bs-popover" 
+                            id="pop-{{dependency.name}}"
+                            (onHidden)="onPopoverHidden()">
+                        </span>
+                    </td>
                     <td class="action" (click)="dependency.action && handleCreateWIclick(dependency, $event)">{{dependency.action}}</td>
                 </tr>
             </tbody>
@@ -100,3 +114,8 @@
     </div>
     <div *ngIf="dependenciesList.length === 0">No data to show</div>
 </div>
+<ng-template #addIntentTemplate>
+    <input class="form-control" placeholder="Add Intent..." [(ngModel)]="intentString" autofocus>
+    <button class="btn btn-default pull-right user-intent-add-btn" (click)="onAddIntent(intentString)">Add</button>
+    <button class="btn btn-default pull-right user-intent-close-btn" (click)="closeIntentPopover()">Close</button>
+</ng-template>

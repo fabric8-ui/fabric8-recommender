@@ -1,5 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { PopoverModule } from 'ngx-bootstrap';
 
 import {TooltipModule} from 'ngx-bootstrap';
 
@@ -14,7 +16,9 @@ import {ToastNotificationComponent} from '../toast-notification/toast-notificati
 @NgModule({
     imports: [
         CommonModule,
-        TooltipModule.forRoot()
+        TooltipModule.forRoot(),
+        FormsModule,
+        PopoverModule.forRoot()
     ],
     declarations: [
         ComponentLevelComponent,
