@@ -56,13 +56,12 @@ export class StackAnalysesService {
       .catch(this.handleError);
   }
 
-  saveIntent(data: any): Observable<any> {
-    let hostname = 'http://localhost:32000';
-    let url: string = '/api/v1/user-intent';
-    let fullUrl = hostname + url;
-    let options = new RequestOptions({ headers: this.headers});
+  saveIntent(hostname: string, data: any): Observable<any> {
+    let endpoint: string = '/api/v1/user-intent';
+    let fullUrl: string = hostname + endpoint;
+    let options: RequestOptions = new RequestOptions({ headers: this.headers});
     return this.http.post(fullUrl, data, options)
-    .map((response) => {
+    .map((response: any) => {
       return response;
     })
     .catch(this.handleError);

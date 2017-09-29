@@ -3,6 +3,7 @@ import { Component, Input, OnChanges, ViewChildren, QueryList } from '@angular/c
 import { Observable } from 'rxjs/Observable';
 import { Space, Contexts } from 'ngx-fabric8-wit';
 import { PopoverDirective } from 'ngx-bootstrap';
+import * as _ from 'lodash';
 
 import { ComponentInformationModel, RecommendationsModel, OutlierInformationModel, StackLicenseAnalysisModel } from '../models/stack-report.model';
 import { AddWorkFlowService } from '../stack-details/add-work-flow.service';
@@ -25,7 +26,8 @@ export class ComponentLevelComponent implements OnChanges {
     @Input() header: string;
     @Input() subHeader: string;
 
-    @Input() data;
+    @Input() data: any;
+    @Input() stackUrl: string;
 
     @ViewChildren('pop') pop: QueryList<PopoverDirective>;
 
@@ -146,6 +148,7 @@ export class ComponentLevelComponent implements OnChanges {
         }];
 
         this.currentFilter = this.filters[0].name;
+        this.intentString = '';
     }
 
     /**
@@ -308,30 +311,44 @@ export class ComponentLevelComponent implements OnChanges {
         this.componentForIntent = component;
     }
 
-    public onAddIntent(intentString): void {
+    public onAddIntent(intentString: string): void {
         let currentComponent: string = this.componentForIntent;
+        let intentArray: string[] = [];
+        let isAllValidText: boolean = false;
         this.pop.toArray().forEach((p: any) => {
             if (p._popover._elementRef.nativeElement.getAttribute('id') === 'pop-' +  this.componentForIntent) {
                 p._popover.hide();
             }
         });
-        let intentArray = intentString ? intentString.split(',') : [];
-        intentArray = intentArray.map(item => item.trim());
-        let objToSave = {
-            'component': currentComponent,
-            'intent': intentArray
-        };
-        if (intentArray.length) {
-            this.stackAnalysesService.saveIntent(objToSave)
-            .subscribe((response) => {
-                response = JSON.parse(response._body);
-                console.log(response);
-                if (response.status === 'success') {
-                    this.displayAddIntentResponse(currentComponent, true);
-                } else {
-                    this.displayAddIntentResponse(currentComponent, false);
-                }
+        if (intentString) {
+            intentArray = intentString.split(',');
+            intentArray = intentArray.map((item: string) => {
+                // trim white spaces
+                item = item.trim();
+                // convert to lowercase
+                item = item.toLowerCase();
+                return item;
             });
+            // below is the logic to allow only alphabets and '-' in the intent string
+            isAllValidText = _.every(intentArray, (item: string) => {
+                return /^[a-z-]+$/.test(item);
+            });
+            if (isAllValidText) {
+                let objToSave: any = {
+                    'component': currentComponent,
+                    'intent': intentArray
+                };
+                // hostname from the incoming stack url
+                let hostname = this.stackUrl && this.stackUrl.split('/api/v1')[0];
+                this.stackAnalysesService.saveIntent(hostname, objToSave)
+                .subscribe((response: any) => {
+                    response = JSON.parse(response._body);
+                    let isSuccess: boolean = response.status === 'success' ? true : false;
+                    this.displayAddIntentResponse(currentComponent, isSuccess, null);
+                });
+            } else {
+                this.displayAddIntentResponse(null, false, 'One of the Intent value is not valid. Only alphabet and `-` are allowed.');
+            }
         }
     }
 
@@ -684,8 +701,8 @@ export class ComponentLevelComponent implements OnChanges {
      * displayAddIntentResponse - takes a component string and a boolean and returns nothing
      * Displays the response received from the addition of new intent
      */
-    private displayAddIntentResponse(component: string, isSuccess: boolean): void {
-        let notification = {
+    private displayAddIntentResponse(component: string, isSuccess: boolean, text: string): void {
+        let notification: any = {
             iconClass: '',
             alertClass: '',
             text: null
@@ -693,11 +710,11 @@ export class ComponentLevelComponent implements OnChanges {
         if (isSuccess) {
             notification.iconClass = 'pficon-ok';
             notification.alertClass = 'alert-success';
-            notification.text = this.messages.toastDisplay.text3 + component;
+            notification.text = text ? text : this.messages.toastDisplay.text3 + component;
         } else {
             notification.iconClass = 'pficon-error-circle-o';
             notification.alertClass = 'alert-danger';
-            notification.text = this.messages.toastDisplay.text4 + component;
+            notification.text = text ? text : this.messages.toastDisplay.text4 + component;
         }
         this.workItemResponse.push(notification);
     }

@@ -116,6 +116,6 @@
 </div>
 <ng-template #addIntentTemplate>
     <input class="form-control" placeholder="Add Intent..." [(ngModel)]="intentString" autofocus>
-    <button class="btn btn-default pull-right user-intent-add-btn" (click)="onAddIntent(intentString)">Add</button>
+    <button class="btn btn-default pull-right user-intent-add-btn" (click)="onAddIntent(intentString)" [disabled]="!(intentString.trim().length > 0)">Add</button>
     <button class="btn btn-default pull-right user-intent-close-btn" (click)="closeIntentPopover()">Close</button>
 </ng-template>
