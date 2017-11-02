@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Http, Response, Headers, RequestOptions  } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { AuthenticationService } from 'ngx-login-client';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -48,13 +48,23 @@ export class StackAnalysesService {
     let options = new RequestOptions({ headers: this.headers });
     let stackReport: StackReportModel = null;
     return this.http.get(url, options)
-    // return this.http.get(url)
       .map(this.extractData)
       .map((data) => {
         stackReport = data;
         return stackReport;
       })
       .catch(this.handleError);
+  }
+
+  saveIntent(hostname: string, data: any): Observable<any> {
+    let endpoint: string = '/api/v1/user-intent';
+    let fullUrl: string = hostname + endpoint;
+    let options: RequestOptions = new RequestOptions({ headers: this.headers});
+    return this.http.post(fullUrl, data, options)
+    .map((response: any) => {
+      return response;
+    })
+    .catch(this.handleError);
   }
 
   getCvssObj(score: number): any {

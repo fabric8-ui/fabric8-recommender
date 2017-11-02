@@ -72,6 +72,17 @@
       white-space: nowrap;
       word-break: break-all;
     }
+    .user-intent-wrapper {
+      position: relative;
+
+      .user-intent-btn {
+        cursor: pointer;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 95%;
+      }
+    }
     .action {
       font-size: 10px;
       color: dodgerblue;
@@ -176,4 +187,10 @@
     color: @color-pf-red-100;
     font-weight: bold;
   }
+}
+.user-intent-add-btn {
+  margin: 5px 0;
+}
+.user-intent-close-btn {
+  margin: 5px 5px 5px 0;
 }

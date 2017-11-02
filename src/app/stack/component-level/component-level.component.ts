@@ -1,16 +1,18 @@
-import {Component, Input, OnChanges} from '@angular/core';
-
+import { Component, Input, OnChanges, ViewChildren, QueryList } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import { Space, Contexts } from 'ngx-fabric8-wit';
+import { PopoverDirective } from 'ngx-bootstrap';
+import * as _ from 'lodash';
 
 import { ComponentInformationModel, RecommendationsModel, OutlierInformationModel, StackLicenseAnalysisModel } from '../models/stack-report.model';
 import { AddWorkFlowService } from '../stack-details/add-work-flow.service';
+import { StackAnalysesService } from '../stack-analyses.service';
 
 @Component({
     selector: 'component-level-information',
     styleUrls: ['./component-level.component.less'],
-    providers: [AddWorkFlowService],
+    providers: [ AddWorkFlowService, StackAnalysesService ],
     templateUrl: './component-level.component.html'
 })
 
@@ -24,7 +26,10 @@ export class ComponentLevelComponent implements OnChanges {
     @Input() header: string;
     @Input() subHeader: string;
 
-    @Input() data;
+    @Input() data: any;
+    @Input() stackUrl: string;
+
+    @ViewChildren('pop') pop: QueryList<PopoverDirective>;
 
     public workItemResponse: Array<any> = [];
     public dependencies: Array<ComponentInformationModel> = [];
@@ -33,6 +38,7 @@ export class ComponentLevelComponent implements OnChanges {
     public angleDown: string = 'fa-angle-down';
     public sortDirectionClass: string = this.angleDown;
     public licenseAnalysis: StackLicenseAnalysisModel;
+    public intentString: string;
 
     private dependenciesList: Array<any> = [];
     private headers: Array<any> = [];
@@ -52,11 +58,13 @@ export class ComponentLevelComponent implements OnChanges {
 
     private spaceName: string;
     private userName: string;
+    private componentForIntent: string;
 
 
     constructor(
         private addWorkFlowService: AddWorkFlowService,
-        private context: Contexts
+        private context: Contexts,
+        private stackAnalysesService: StackAnalysesService
     ) {
         this.messages = {
             'title': 'Recommendations',
@@ -72,7 +80,9 @@ export class ComponentLevelComponent implements OnChanges {
             'no_recommendations_suggestion': ' For your stack there are currently no recommendations. Below is some general information about it.',
             'toastDisplay': {
                 'text1': 'Workitem with ID ',
-                'text2': ' has been added to the backlog.'
+                'text2': ' has been added to the backlog.',
+                'text3': 'Successfully added Intent(s) for the component ',
+                'text4': 'Failed to add Intent(s) for the component '
             },
             'create_work_item_error': 'There was a error while creating work item.',
             'default_stack_name': 'An existing stack',
@@ -138,6 +148,7 @@ export class ComponentLevelComponent implements OnChanges {
         }];
 
         this.currentFilter = this.filters[0].name;
+        this.intentString = '';
     }
 
     /**
@@ -263,7 +274,7 @@ export class ComponentLevelComponent implements OnChanges {
         }
     }
 
-    isNormalLicense(dependency) {
+    public isNormalLicense(dependency) {
         if (dependency.license_analysis &&
             dependency.license_analysis.licensestatus &&
             (dependency.license_analysis.licensestatus.toLowerCase() === 'outlier' ||
@@ -274,26 +285,86 @@ export class ComponentLevelComponent implements OnChanges {
         return true;
     }
 
-    isOutliedLicense(dependency: any, licenseToCheck: string): boolean {
+    public isOutliedLicense(dependency: any, licenseToCheck: string): boolean {
         if (dependency.license_analysis.outliedLicense === licenseToCheck) {
             return true;
         }
         return false;
     }
 
-    isUnknownLicense(dependency: any, licenseToCheck: string): boolean {
+    public isUnknownLicense(dependency: any, licenseToCheck: string): boolean {
         if (dependency.license_analysis.unknownLicense === licenseToCheck) {
             return true;
         }
         return false;
     }
 
-    isConflictLicense(dependency: any, licenseToCheck: string): boolean {
+    public isConflictLicense(dependency: any, licenseToCheck: string): boolean {
         if (dependency.license_analysis.conflictingLicenses[0]['license1'] === licenseToCheck ||
             dependency.license_analysis.conflictingLicenses[0]['license2'] === licenseToCheck) {
             return true;
         }
         return false;
+    }
+
+    public showIntentPopover(component) {
+        this.componentForIntent = component;
+    }
+
+    public onAddIntent(intentString: string): void {
+        let currentComponent: string = this.componentForIntent;
+        let intentArray: string[] = [];
+        let isAllValidText: boolean = false;
+        this.pop.toArray().forEach((p: any) => {
+            if (p._popover._elementRef.nativeElement.getAttribute('id') === 'pop-' +  this.componentForIntent) {
+                p._popover.hide();
+            }
+        });
+        if (intentString) {
+            intentArray = intentString.split(',');
+            intentArray = intentArray.map((item: string) => {
+                // trim white spaces
+                item = item.trim();
+                // convert to lowercase
+                item = item.toLowerCase();
+                return item;
+            });
+            // below is the logic to allow only alphabets and '-' in the intent string
+            isAllValidText = _.every(intentArray, (item: string) => {
+                return /^[a-z-]+$/.test(item);
+            });
+            if (isAllValidText) {
+                let objToSave: any = {
+                    'component': currentComponent,
+                    'intent': intentArray
+                };
+                // hostname from the incoming stack url
+                let hostname = this.stackUrl && this.stackUrl.split('/api/v1')[0];
+                this.stackAnalysesService.saveIntent(hostname, objToSave)
+                .subscribe((response: any) => {
+                    response = JSON.parse(response._body);
+                    let isSuccess: boolean = response.status === 'success' ? true : false;
+                    this.displayAddIntentResponse(currentComponent, isSuccess, null);
+                });
+            } else {
+                this.displayAddIntentResponse(null, false, 'One of the Intent value is not valid. Only alphabet and `-` are allowed.');
+            }
+        }
+    }
+
+    public onPopoverHidden() {
+        this.componentForIntent = '';
+        this.intentString = '';
+    }
+
+    public closeIntentPopover() {
+        this.pop.toArray().forEach((p: any) => {
+            if (p._popover._elementRef.nativeElement.getAttribute('id') === 'pop-' +  this.componentForIntent) {
+                this.componentForIntent = '';
+                this.intentString = '';
+                p._popover.hide();
+            }
+        });
     }
 
     ngOnChanges(): void {
@@ -626,6 +697,26 @@ export class ComponentLevelComponent implements OnChanges {
         this.workItemResponse.push(notification);
     }
 
-
+    /**
+     * displayAddIntentResponse - takes a component string and a boolean and returns nothing
+     * Displays the response received from the addition of new intent
+     */
+    private displayAddIntentResponse(component: string, isSuccess: boolean, text: string): void {
+        let notification: any = {
+            iconClass: '',
+            alertClass: '',
+            text: null
+        };
+        if (isSuccess) {
+            notification.iconClass = 'pficon-ok';
+            notification.alertClass = 'alert-success';
+            notification.text = text ? text : this.messages.toastDisplay.text3 + component;
+        } else {
+            notification.iconClass = 'pficon-error-circle-o';
+            notification.alertClass = 'alert-danger';
+            notification.text = text ? text : this.messages.toastDisplay.text4 + component;
+        }
+        this.workItemResponse.push(notification);
+    }
 
 }
