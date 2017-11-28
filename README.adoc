@@ -141,6 +141,24 @@ run `npm start`.
 ** To hit stack analysis api in standalone mode**
 Put a token in the environment variable with key as 'STACK_API_TOKEN'.
 
+=== Development standalone build
+
+To build the app and start in standalone mode, please run the command
+----
+$ npm start
+----
+
+This starts the app at the url `http://localhost:8088` and we can bring the app up with the url format which is below
+
+```
+http://localhost:8088/#/analyze/<REQUEST_ANALYSIS_ID>?api_data={
+    "access_token": "<ACCESS_TOKEN>",
+    "route_config": {
+        "api_url": "<API_URL>"
+    }
+}
+```
+
 == CSS and LESS
 
 fabric8-stack-analysis-ui uses LESS for it's stylesheets. It also uses the Angular emulation
