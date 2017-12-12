@@ -209,9 +209,9 @@ export class StackDetailsComponent implements OnChanges {
             });
         } else if(data && data.hasOwnProperty('error')){
             this.handleError({
-                message: "Analysis for your stack is in progress...",
+                message: " Your report is getting generated.Please Revisit!",
                 code: data.statusCode,
-                title: 'Updating ...'
+                title: ''
             });
         }
         else {
