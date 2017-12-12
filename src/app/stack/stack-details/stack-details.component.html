@@ -1,6 +1,6 @@
 <div class="stack-report">
   <a class="stack-reports-btn" (click)="showStackModal($event)">{{displayName}}</a>
-  <modal #stackModule title="Stack report for {{appName}}, Build #{{buildNumber}}" modalClass="modal-lg modal-fullscreen" [ngClass]="{'modal-width-class': !errorMessage , 'modal-width-error-class': errorMessage}" (onClose)="handleModalClose();" (onOpen)="init();">
+  <modal #stackModule title="Stack report for {{appName}}, Build #{{buildNumber}}" modalClass="modal-lg modal-fullscreen" [ngClass]="{'modal-width-class': !errorMessage, 'modal-width-error-class': errorMessage}" (onClose)="handleModalClose();" (onOpen)="init();">
     <modal-header>
         {{modalHeader}}
     </modal-header>
@@ -77,7 +77,7 @@
           <p>{{errorMessage.message}}</p>
         </div>
         <div [hidden]="errorMessage.status" class="blank-slate-pf-secondary-action">
-          <button class="btn btn-default" (click)="stackModule.close()">OK</button>
+          <button class="btn btn-primary" (click)="stackModule.close()">OK</button>
         </div>
         <div [hidden]="!errorMessage.status" class="blank-slate-pf-secondary-action">
           <button class="btn btn-primary" (click)="stackModule.close()">Return to Pipeline</button>

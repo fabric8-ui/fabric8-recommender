@@ -209,7 +209,7 @@ export class StackDetailsComponent implements OnChanges {
             });
         } else if(data && data.hasOwnProperty('error')){
             this.handleError({
-                message: " Your report is getting generated.Please Revisit!",
+                message: 'Your report is getting generated.Please Revisit!',
                 code: data.statusCode,
                 title: ''
             });
