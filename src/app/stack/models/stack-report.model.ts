@@ -38,6 +38,8 @@ export class ComponentInformationModel {
     name: string;
     osio_user_count: number;
     replaces: any;
+    reason: string;
+    confidence_reason?: number;
     security: Array<any>;
     sentiment: SentimentModel;
     version: string;

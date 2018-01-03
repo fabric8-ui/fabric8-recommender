@@ -382,17 +382,23 @@ export class ComponentLevelComponent implements OnChanges {
                     order: 9
                 }, {
                     name: 'Tags',
-                    class: 'large',
+                    class: 'medium',
                     order: 10
-                }, {
-                     name: 'Action',
-                     class: 'small'
-                 }
+                }
             ];
 
             if (this.isCompanion) {
                 this.headers.splice(2, 1);
+                this.headers.push({
+                    name: 'Confidence Score',
+                    class: 'small'
+                });
             }
+
+            this.headers.push({
+                name: 'Action',
+                class: 'small'
+            });
 
             this.dependenciesList = [];
             let linesOfCode: any = '';
@@ -403,24 +409,26 @@ export class ComponentLevelComponent implements OnChanges {
                 dependency = this.setParams(eachOne, this.isCompanion !== undefined);
                 dependency['isUsageOutlier'] = this.isUsageOutlier(dependency['name']);
                 dependency['compId'] = 'comp-' + i;
-                if (this.licenseAnalysis.status &&
-                    this.licenseAnalysis.status.toLowerCase() === 'successful' &&
-                    this.licenseAnalysis.outlier_packages.length) {
-                    dependency = this.checkIfOutlierPackage(dependency);
-                }
-                if (this.licenseAnalysis.status &&
-                    (this.licenseAnalysis.status.toLowerCase() === 'unknown' ||
-                    this.licenseAnalysis.status.toLowerCase() === 'componentconflict') &&
-                    this.licenseAnalysis.unknown_licenses) {
-                    if (this.licenseAnalysis.unknown_licenses.really_unknown.length) {
-                        dependency = this.checkIfReallyUnknownLicense(dependency);
+                if (this.licenseAnalysis) {
+                    if (this.licenseAnalysis.status &&
+                        this.licenseAnalysis.status.toLowerCase() === 'successful' &&
+                        this.licenseAnalysis.outlier_packages.length) {
+                        dependency = this.checkIfOutlierPackage(dependency);
                     }
-                }
-                if (this.licenseAnalysis.status.toLowerCase() === 'componentconflict' &&
-                    this.licenseAnalysis.unknown_licenses) {
-                    if (this.licenseAnalysis.unknown_licenses.component_conflict &&
-                        this.licenseAnalysis.unknown_licenses.component_conflict.length) {
-                        dependency = this.checkIfLicenseConflictInAComponent(dependency);
+                    if (this.licenseAnalysis.status &&
+                        (this.licenseAnalysis.status.toLowerCase() === 'unknown' ||
+                        this.licenseAnalysis.status.toLowerCase() === 'componentconflict') &&
+                        this.licenseAnalysis.unknown_licenses) {
+                        if (this.licenseAnalysis.unknown_licenses.really_unknown.length) {
+                            dependency = this.checkIfReallyUnknownLicense(dependency);
+                        }
+                    }
+                    if (this.licenseAnalysis.status.toLowerCase() === 'componentconflict' &&
+                        this.licenseAnalysis.unknown_licenses) {
+                        if (this.licenseAnalysis.unknown_licenses.component_conflict &&
+                            this.licenseAnalysis.unknown_licenses.component_conflict.length) {
+                            dependency = this.checkIfLicenseConflictInAComponent(dependency);
+                        }
                     }
                 }
                 this.dependenciesList.push(dependency);
@@ -477,6 +485,11 @@ export class ComponentLevelComponent implements OnChanges {
         output['categories'] = (output['categories'] && output['categories'].length > 0 &&
             output['categories'].join(', <br/> ')) || '';
         output['action'] = canCreateWorkItem ? 'Create Work Item' : '';
+
+        if (this.isCompanion) {
+            // Confidence Reason score for companion components
+            output['confidence_reason'] = input['confidence_reason'] ? Math.round(input['confidence_reason']) : '-';
+        }
         return output;
     }
 

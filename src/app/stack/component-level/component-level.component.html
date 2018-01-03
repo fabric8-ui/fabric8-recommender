@@ -93,6 +93,7 @@
                         </span>
                     </td>
                     <td  [innerHTML]="dependency.categories" ></td>
+                    <td class="text-center" *ngIf="isCompanion === true">{{dependency['confidence_reason']}}%</td>
                     <td class="action" (click)="dependency.action && handleCreateWIclick(dependency, $event)">{{dependency.action}}</td>
                 </tr>
             </tbody>
