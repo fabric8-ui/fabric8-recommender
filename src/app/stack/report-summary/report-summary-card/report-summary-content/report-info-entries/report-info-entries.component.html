@@ -1,0 +1,11 @@
+<div class="ana-summary-info">
+    <div *ngIf="entry?.infoType === 'text'" class="ana-normal">
+        <span class="info-key" [innerText]="entry?.infoText"></span>
+        <span class="info-value" [innerText]="entry?.infoValue"></span>
+    </div>
+    <div *ngIf="entry?.infoType !== 'text'" class="ana-custom">
+        <!-- should handle for various infoTypes -->
+        <span class="info-key" [innerText]="entry?.infoText"></span>
+        <span class="info-value"></span>
+    </div>
+</div>
