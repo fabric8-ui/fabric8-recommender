@@ -3,9 +3,17 @@
         <span class="info-key" [innerText]="entry?.infoText"></span>
         <span class="info-value" [innerText]="entry?.infoValue"></span>
     </div>
-    <div *ngIf="entry?.infoType !== 'text'" class="ana-custom">
+    <div class="ana-custom" [ngSwitch]="entry?.infoType">
         <!-- should handle for various infoTypes -->
-        <span class="info-key" [innerText]="entry?.infoText"></span>
-        <span class="info-value"></span>
+        <div *ngSwitchCase="'progress'">
+            <span class="info-key" [innerText]="entry?.infoText"></span>
+            <span class="info-value">
+                <span class="content-desc">{{entry?.infoValue + ' / ' + 10}}</span>
+                <div class="ana-progress-bar" *ngIf="entry?.config && entry?.config?.data">
+                    <div class="progress-meter" [ngStyle]="{'background-color': entry?.config?.data?.currentValue < 70 ? 'ORANGE' : '#ff6162', 'width': entry?.config?.data?.currentValue + '%'}"></div>
+                </div>
+                <span class="footer-desc" [innerText]="entry?.config?.footerText"></span>
+            </span>
+        </div>
     </div>
 </div>

@@ -112,7 +112,14 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
                     let maxIssueEntry: MReportSummaryInfoEntry = new MReportSummaryInfoEntry();
                     maxIssueEntry.infoText = 'Highest CVSS Score';
                     maxIssueEntry.infoValue = maxIssue.CVSS;
-                    // maxIssueEntry.infoType = 'chart';
+                    maxIssueEntry.infoType = 'progress';
+                    maxIssueEntry.config = {
+                        data: {
+                            currentValue: Number(maxIssue.CVSS) * 10,
+                            totalValue: 100
+                        },
+                        footerText: 'No. of components with this CVSS Score: ' + totalComponentsWithMaxScore
+                    };
                     securityCard.reportSummaryContent.infoEntries.push(maxIssueEntry);
                 }
 
