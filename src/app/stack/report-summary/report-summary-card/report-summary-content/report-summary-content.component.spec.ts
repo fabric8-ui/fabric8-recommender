@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Http, ConnectionBackend, RequestOptions, BaseRequestOptions } from '@angular/http';
 
 import { ReportSummaryInfoEntriesComponent } from './report-info-entries/report-info-entries.component';
+import { ProgressMeterModule } from '../../../utils/progress-meter/progress-meter.module';
 
 import { ReportSummaryContentComponent } from './report-summary-content.component';
 
@@ -14,6 +15,9 @@ describe ('ReportSummaryContentComponent', () => {
             declarations: [
                 ReportSummaryInfoEntriesComponent,
                 ReportSummaryContentComponent
+            ],
+            imports: [
+                ProgressMeterModule
             ],
             providers: [
                 Http,
