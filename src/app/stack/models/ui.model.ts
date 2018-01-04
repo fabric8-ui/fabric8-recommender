@@ -26,3 +26,10 @@ export class MReportSummaryCard {
     reportSummaryDescription: string;
     reportSummaryContent: MReportSummaryContent;
 }
+
+export class MProgressMeter {
+    headerText: string;
+    value: number;
+    bgColor: string;
+    footerText: string;
+}

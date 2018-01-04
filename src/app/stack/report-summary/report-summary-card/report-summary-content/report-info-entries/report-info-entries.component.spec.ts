@@ -3,6 +3,7 @@ import { Http, ConnectionBackend, RequestOptions, BaseRequestOptions } from '@an
 
 
 import { ReportSummaryInfoEntriesComponent } from './report-info-entries.component';
+import { ProgressMeterModule } from '../../../../utils/progress-meter/progress-meter.module';
 
 describe ('ReportSummaryInfoEntriesComponent', () => {
     let component: ReportSummaryInfoEntriesComponent;
@@ -10,6 +11,9 @@ describe ('ReportSummaryInfoEntriesComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                ProgressMeterModule
+            ],
             declarations: [
                 ReportSummaryInfoEntriesComponent
             ],

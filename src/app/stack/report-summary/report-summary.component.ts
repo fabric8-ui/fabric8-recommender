@@ -114,10 +114,9 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
                     maxIssueEntry.infoValue = maxIssue.CVSS;
                     maxIssueEntry.infoType = 'progress';
                     maxIssueEntry.config = {
-                        data: {
-                            currentValue: Number(maxIssue.CVSS) * 10,
-                            totalValue: 100
-                        },
+                        headerText: maxIssue.CVSS + ' / ' + 10,
+                        value: Number(maxIssue.CVSS),
+                        bgColor: Number(maxIssue.CVSS) >= 7 ? '#ff6162' : 'ORANGE',
                         footerText: 'No. of components with this CVSS Score: ' + totalComponentsWithMaxScore
                     };
                     securityCard.reportSummaryContent.infoEntries.push(maxIssueEntry);

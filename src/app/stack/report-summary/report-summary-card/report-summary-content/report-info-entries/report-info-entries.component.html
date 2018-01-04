@@ -8,11 +8,7 @@
         <div *ngSwitchCase="'progress'">
             <span class="info-key" [innerText]="entry?.infoText"></span>
             <span class="info-value">
-                <span class="content-desc">{{entry?.infoValue + ' / ' + 10}}</span>
-                <div class="ana-progress-bar" *ngIf="entry?.config && entry?.config?.data">
-                    <div class="progress-meter" [ngStyle]="{'background-color': entry?.config?.data?.currentValue < 70 ? 'ORANGE' : '#ff6162', 'width': entry?.config?.data?.currentValue + '%'}"></div>
-                </div>
-                <span class="footer-desc" [innerText]="entry?.config?.footerText"></span>
+                <ana-progress-meter [config]="entry?.config"></ana-progress-meter>
             </span>
         </div>
     </div>
