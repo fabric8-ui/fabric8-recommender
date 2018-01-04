@@ -67,7 +67,6 @@ export class StackDetailsComponent implements OnChanges {
     public customClass: string = 'accordion-custom';
     public analysis: any = {};
 
-
     public feedbackConfig: any = {};
 
     public tabs: Array<any> = [];
@@ -104,6 +103,7 @@ export class StackDetailsComponent implements OnChanges {
     public handleModalClose(): void {
         this.resetFields();
     }
+
 
     public tabSelection(tab: any): void {
         if (tab) {
