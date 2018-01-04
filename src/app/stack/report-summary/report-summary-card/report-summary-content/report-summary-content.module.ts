@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 /** Vendor imports Go HERE */
 
-import { ReportSummaryInfoEntriesComponent } from './report-info-entries/report-info-entries.component';
 
+import { ReportSummaryInfoEntriesComponent } from './report-info-entries/report-info-entries.component';
 import { ReportSummaryContentComponent } from './report-summary-content.component';
 
 const dependencies = [
