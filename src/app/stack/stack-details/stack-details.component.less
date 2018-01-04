@@ -2,7 +2,26 @@
 
 .stack-report {
   .stack-reports-btn { cursor: pointer; }
-  .modal-width-class { width: 95%; }
+  .modal-width-class {
+    width: 95%;
+    .modal-fullscreen {
+      width: 95%;
+    }
+  }
+  .modal-width-error-class {
+    width: fit-content;
+    .modal-fullscreen {
+      width: fit-content;
+      margin: 175px auto;
+      .pre-loader {
+        width: fit-content;
+        left: 50%;
+        .pre-loader-spinner {
+          margin: 20px;
+        }
+      }
+    }
+  }
   .accordion-indicator {
     top: unset;
     margin-left: 10px;
@@ -31,6 +50,10 @@
     text-align: center;
     background: @color-pf-white;
     border: none;
+    margin: -14px;
+    padding-bottom: 10px;
+    padding-top: 25px;
+    width: fit-content;
     .warning-icon {
       font-size: 6em;
       i:before {
