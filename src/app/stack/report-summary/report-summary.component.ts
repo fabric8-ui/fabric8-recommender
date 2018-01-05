@@ -38,6 +38,17 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
     public reportSummaryTitle: MReportSummaryTitle;
     public reportSummaryDescription: string;
 
+    public notification: any = {
+        warning: {
+            bg: '#ff6162',
+            icon: 'pficon-warning-triangle-o'
+        },
+        good: {
+            bg: 'GREEN',
+            icon: 'fa fa-check'
+        }
+    };
+
     ngOnInit() {
         this.paintView();
     }
@@ -120,6 +131,11 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
                         footerText: 'No. of components with this CVSS Score: ' + totalComponentsWithMaxScore
                     };
                     securityCard.reportSummaryContent.infoEntries.push(maxIssueEntry);
+                    securityCard.reportSummaryTitle.notificationIcon = this.notification.warning.icon;
+                    securityCard.reportSummaryTitle.notificationIconBgColor = this.notification.warning.bg;
+                } else {
+                    securityCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
+                    securityCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
                 }
 
         } else {
@@ -159,6 +175,13 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
             companionInsights.infoValue = companionCount;
             insightsCard.reportSummaryContent.infoEntries.push(companionInsights);
 
+            insightsCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
+            insightsCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
+            if (usageOutliersCount > 0) {
+                insightsCard.reportSummaryTitle.notificationIcon = this.notification.warning.icon;
+                insightsCard.reportSummaryTitle.notificationIconBgColor = this.notification.warning.bg;
+            }
+
         } else {
             // Handle no recommendations block scenario
         }
@@ -196,6 +219,13 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
             let unknownLicenses = licenseAnalysis.unknown_licenses.really_unknown;
             unknownLicense.infoValue = unknownLicenses ? unknownLicenses.length : 0;
             licensesCard.reportSummaryContent.infoEntries.push(unknownLicense);
+
+            licensesCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
+            licensesCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
+            if (conflictLicenses.length > 0 || unknownLicenses.length > 0) {
+                licensesCard.reportSummaryTitle.notificationIcon = this.notification.warning.icon;
+                licensesCard.reportSummaryTitle.notificationIconBgColor = this.notification.warning.bg;
+            }
         } else {
             // Handle no licenses section scenario
         }

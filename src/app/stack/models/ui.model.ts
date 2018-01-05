@@ -2,6 +2,7 @@ export class MReportSummaryTitle {
     titleIcon: string;
     titleText: string;
     notificationIcon?: string;
+    notificationIconBgColor?: string;
 
     // constructor(titleIcon: string, title: string, notificationIcon: string = null) {
     //     this.titleIcon = titleIcon;
