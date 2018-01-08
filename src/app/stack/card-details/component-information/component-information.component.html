@@ -1,0 +1,75 @@
+<div class="analytics-component-information">
+    <div [class]="position?.className" *ngFor="let position of positions; let i = index;">
+        <div [ngSwitch]="position?.identifier">
+            <!-- Security Card -->
+            <div *ngSwitchCase="'serial'">
+                <!-- Serial Numbers -->
+                <span [innerText]="i + 1"></span>
+            </div>
+            <div *ngSwitchCase="'component'">
+                <!-- Component Names -->
+                <span *ngIf="!component?.recommendation || (component?.recommendation?.type !== 'companion')" [innerText]="component?.name"></span>
+                <!--
+                    <reco-name [name]="component?.name" [reason]="component?.recommendation?.reason" *ngIf="component?.recommendation && (component?.recommendation?.type === 'companion')"></reco-name>
+                -->
+            </div>
+            <div *ngSwitchCase="'cveCount'">
+                <!-- cveCount -->
+                <span [innerText]="component?.securityDetails && component?.securityDetails.length || 0"></span>
+            </div>
+            <div *ngSwitchCase="'highestCVSS'">
+                <!-- highestCVSS -->
+                <span *ngIf="!component?.hasSecurityIssue" [innerText]="NA"></span>
+                <ana-progress-meter *ngIf="component?.hasSecurityIssue" [config]="component?.securityDetails?.progressReport"></ana-progress-meter>
+            </div>
+            <div *ngSwitchCase="'cveIdOfH'">
+                <!-- cveIdOfHeighest CVSS -->
+                <span *ngIf="!component?.hasSecurityIssue" [innerText]="NA"></span>
+                <span *ngIf="component?.hasSecurityIssue" [innerText]="component?.securityDetails && component?.securityDetails?.highestIssue?.cve"></span>
+            </div>
+            <div *ngSwitchCase="'action'">
+                <!-- Action -->
+                <span (click)="handleAction(component)" [innerText]="component?.action"></span>
+            </div>
+            <!-- Security Card -->
+
+            
+            
+            <!-- Insights Card -->
+            <div *ngSwitchCase="'alternate'">
+                <!-- alternate -->
+                <span [innerText]="component?.recommendation?.name"></span>
+            </div>
+            <div *ngSwitchCase="'feedback'">
+                <!-- feedback -->
+                <!--
+                    <feedback [config]="></feedback>
+                -->
+            </div>
+            <div *ngSwitchCase="'confidence'">
+                <!-- confidence -->
+                <ana-progress-meter *ngIf="component?.recommendation" [config]="component?.recommendation?.confidenceScore"></ana-progress-meter>
+            </div>
+            <!-- Insights Card -->
+
+            
+            
+            <!-- Licenses Card -->
+            <div *ngSwitchCase="'licensesAffected'">
+                <!-- licensesAffected -->
+            </div>
+            <div *ngSwitchCase="'unknownLicenses'">
+                <!-- unknownLicenses -->
+            </div>
+            <!-- Licenses Card -->
+
+            
+            
+            <!-- Component Details Card -->
+            <div *ngSwitchCase="'componentCheck'">
+                <!-- componentCheck -->
+            </div>
+            <!-- Component Details Card -->
+        </div>
+    </div>
+</div>

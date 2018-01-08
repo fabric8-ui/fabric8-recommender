@@ -1,0 +1,11 @@
+<div class="analytics-component-details">
+    <div class="component-detail-headers">
+        <div [class]="header.className" *ngFor="let header of details?.headers" [innerText]="header.text"></div>
+    </div>
+    <div *ngIf="compDetails?.type === 'component'" class="component-information-container">
+        <component-information [component]="component" *ngFor="let component of compDetails?.componentInformation"></component-information>
+    </div>
+    <div *ngIf="compDetails?.type === 'recommendation'" class="component-information-container">
+        <component-information [component]="component" *ngFor="let component of compDetails?.recommendationInformation"></component-information>
+    </div>
+</div>

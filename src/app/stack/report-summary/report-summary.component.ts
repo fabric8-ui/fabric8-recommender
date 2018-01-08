@@ -2,6 +2,8 @@
 import {
     Component,
     Input,
+    Output,
+    EventEmitter,
     OnChanges,
     OnInit,
     SimpleChanges
@@ -21,7 +23,8 @@ import {
     MReportSummaryCard,
     MReportSummaryContent,
     MReportSummaryInfoEntry,
-    MReportSummaryTitle
+    MReportSummaryTitle,
+    MCardDetails
 } from '../models/ui.model';
 import { ReportSummaryUtils } from '../utils/report-summary-utils';
 
@@ -32,6 +35,7 @@ import { ReportSummaryUtils } from '../utils/report-summary-utils';
 })
 export class ReportSummaryComponent implements OnInit, OnChanges {
     @Input() report: ResultInformationModel;
+    @Output('onCardClick') onCardClick = new EventEmitter<MCardDetails>();
 
     public reportSummaryCards: Array<MReportSummaryCard> = [];
 
@@ -55,6 +59,17 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
             this.report = <ResultInformationModel> summary.currentValue;
             this.repaintView();
         }
+    }
+
+    public handleSummaryClick(details: MCardDetails): void {
+        this.onCardClick.emit(details);
+    }
+
+    private newCardInstance(): MReportSummaryCard {
+        let newCard: MReportSummaryCard = new MReportSummaryCard();
+        newCard.reportSummaryContent = new MReportSummaryContent();
+        newCard.reportSummaryTitle = new MReportSummaryTitle();
+        return newCard;
     }
 
     private getSecurityReportCard(): MReportSummaryCard {
