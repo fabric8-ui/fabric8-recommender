@@ -37,14 +37,6 @@ export class MProgressMeter {
 }
 
 /** Bottom Section */
-export class MRecommendationInformation {
-    type: string; // Alternate or companion
-    recommendation: MComponentInformation;
-    reason?: string = null;
-    feedback?: boolean;
-    confidenceScore: number;
-}
-
 export class MGithub {
     contributors?: string = 'NA';
     forks?: string = 'NA';
@@ -62,10 +54,22 @@ export class MCrowdSourcing {
     canSuggestTags?: boolean = true;
 }
 
+export class MSecurityIssue {
+    cvss: string;
+    cve: string;
+}
+
+export class MSecurityDetails {
+    issues?: Array<MSecurityIssue> = null;
+    highestIssue?: MSecurityIssue = null;
+    progressReport?: MProgressMeter = null;
+}
+
 export class MComponentInformation {
     name: string;
     currentVersion?: string = 'NA';
     latestVersion?: string = 'NA';
+    securityDetails?: MSecurityDetails = null;
     hasSecurityIssue?: boolean;
     isUsageOutlier?: boolean;
     hasLicenseIssue?: boolean;
@@ -73,17 +77,35 @@ export class MComponentInformation {
     crowdSourcing: MCrowdSourcing;
     github: MGithub;
     osio: MOsio;
+    action?: string = null;
+    needsExpansion?: boolean = true;
+    recommendation?: MRecommendationInformation = null;
+}
+
+export class MRecommendationInformation extends MComponentInformation {
+    type: string; // Alternate or companion
+    reason?: string = null;
+    feedback?: boolean;
+    confidenceScore: MProgressMeter;
 }
 
 export class MComponentDetails {
-    componentInformation: MComponentInformation;
-    recommendationInformation?: MRecommendationInformation;
-    action?: string = null;
-    needsExpansion?: boolean = true;
+    type: string;
+    componentInformation?: MComponentInformation = null;
+    recommendationInformation?: MRecommendationInformation = null;
+}
+
+export class MComponentHeaderColumn {
+    identifier: string;
+    text: string;
+    className: string;
+    isSortable?: boolean = false;
+    isDragable?: boolean = false;
 }
 
 export class MReportInformation {
-    headers: Array<string>;
+    name: string;
+    headers: Array<MComponentHeaderColumn>;
     componentDetails: Array<MComponentDetails>;
 }
 
