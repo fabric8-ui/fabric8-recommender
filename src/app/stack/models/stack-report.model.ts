@@ -43,6 +43,7 @@ export class ComponentInformationModel {
     security: Array<SecurityInformationModel>;
     sentiment: SentimentModel;
     version: string;
+    topic_list: Array<string>;
 }
 
 export class SecurityInformationModel {
