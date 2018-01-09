@@ -125,22 +125,6 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
         let osio: MOsio = null;
         let headers: Array<MComponentHeaderColumn> = this.fillColumnHeaders(cardType);
         let compInfoType: string = 'component';
-        switch (cardType) {
-            case 'security':
-                compInfoType = 'component';
-                break;
-            case 'insights':
-                
-                break;
-            case 'licenses':
-                
-                break;
-            case 'compDetails':
-                
-                break;
-            default:
-                break;
-        }
 
         let components: Array<ComponentInformationModel> = null;
         if (this.report.user_stack_info
@@ -152,16 +136,56 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
             components.forEach((component: ComponentInformationModel) => {
                 componentInformation = this.getComponentInformation(component);
                 componentDetails.push(new MComponentDetails(
-                    cardType,
                     componentInformation,
                     recommendationInformation
                 ));
-                reportInformations.push(new MReportInformation(
-                    cardType,
-                    headers,
-                    componentDetails
-                ));
             });
+
+            let genericReport: MReportInformation = new MReportInformation(
+                null,
+                'component',
+                this.fillColumnHeaders(cardType, 1),
+                componentDetails
+            );
+
+            switch (cardType) {
+                case 'security':
+                    genericReport.name = 'securityTab';
+                    reportInformations.push(genericReport);
+                    break;
+                case 'insights':
+                    genericReport.name = 'Usage Outlier Details';
+                    reportInformations.push(genericReport);
+                    reportInformations.push(new MReportInformation(
+                        'Companion Component Details',
+                        'recommendation',
+                        this.fillColumnHeaders(cardType, 2),
+                        componentDetails
+                    ));
+                    break;
+                case 'licenses':
+                    genericReport.name = 'Conflict License(s) details';
+                    reportInformations.push(genericReport);
+                    reportInformations.push(new MReportInformation(
+                        'Unknown license(s) details',
+                        'component',
+                        this.fillColumnHeaders(cardType, 2),
+                        componentDetails
+                    ));
+                    break;
+                case 'compDetails':
+                    genericReport.name = 'Analyzed component Details';
+                    reportInformations.push(genericReport);
+                    reportInformations.push(new MReportInformation(
+                        'Unknown Component details',
+                        'component',
+                        this.fillColumnHeaders(cardType, 2),
+                        componentDetails
+                    ));
+                    break;
+                default:
+                    break;
+            }
             return reportInformations;
         }
         return null;
@@ -237,7 +261,7 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
                 }
             }
             return new MComponentInformation(
-                null,
+                component.name,
                 currentVersion,
                 latestVersion,
                 securityDetails,
@@ -276,84 +300,133 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
         };
     }
 
-    private fillColumnHeaders(cardType: string): Array<MComponentHeaderColumn> {
+    private fillColumnHeaders(cardType: string, tabNo: number = null): Array<MComponentHeaderColumn> {
         let headers: Array<MComponentHeaderColumn> = [];
-        /**
-         * Push in the common entries first.
-         */
+
         headers.push(new MComponentHeaderColumn(
             'serial',
             '#',
-            'extra-small'
-        ));
-        headers.push(new MComponentHeaderColumn(
-            'component',
-            'Components',
-            'medium'
-        ));
-        headers.push(new MComponentHeaderColumn(
-            'action',
-            'Action',
-            'small'
+            'float-left extra-small'
         ));
         switch (cardType) {
             case 'security':
                 headers.push(new MComponentHeaderColumn(
+                    'component',
+                    'Components',
+                    'float-left medium'
+                ));
+                headers.push(new MComponentHeaderColumn(
+                    'action',
+                    'Action',
+                    'float-left small'
+                ));
+                headers.push(new MComponentHeaderColumn(
                     'cveCount',
                     'No. of CVE(s)',
-                    'small'
+                    'float-left small'
                 ));
                 headers.push(new MComponentHeaderColumn(
                     'highestCVSS',
                     'Highest CVSS Score',
-                    'medium'
+                    'float-left medium'
                 ));
                 headers.push(new MComponentHeaderColumn(
                     'cveIdOfH',
                     'CVE ID of highest CVSS score',
-                    'medium'
+                    'float-left medium'
                 ));
                 break;
             case 'insights':
                 headers.push(new MComponentHeaderColumn(
-                    'alternate',
-                    'Alternate Components',
-                    'medium'
+                    'component',
+                    'Components',
+                    'float-left medium'
                 ));
+                if (tabNo === 1) {
+                    headers.push(new MComponentHeaderColumn(
+                        'alternate',
+                        'Alternate Components',
+                        'float-left medium'
+                    ));
+                } else if (tabNo === 2) {
+
+                }
                 headers.push(new MComponentHeaderColumn(
                     'confidence',
                     'Confidence Score',
-                    'medium'
+                    'float-left medium'
                 ));
                 headers.push(new MComponentHeaderColumn(
                     'feedback',
                     'Feedback',
-                    'small'
+                    'float-left small'
+                ));
+                headers.push(new MComponentHeaderColumn(
+                    'action',
+                    'Action',
+                    'float-left small'
                 ));
                 break;
             case 'licenses':
                 headers.push(new MComponentHeaderColumn(
-                    'licensesAffected',
-                    'Licenses Affected',
-                    'medium'
+                    'component',
+                    'Components',
+                    'float-left medium'
+                ));
+                if (tabNo === 1) {
+                    headers.push(new MComponentHeaderColumn(
+                        'licensesAffected',
+                        'Licenses Affected',
+                        'float-left medium'
+                    ));
+
+                } else if (tabNo === 2) {
+                    headers.push(new MComponentHeaderColumn(
+                        'unknownLicenses',
+                        'Unknown License',
+                        'float-left medium'
+                    ));
+                }
+                headers.push(new MComponentHeaderColumn(
+                    'alternate',
+                    'Alternate Components',
+                    'float-left medium'
                 ));
                 headers.push(new MComponentHeaderColumn(
-                    'unknownLicenses',
-                    'Unknown License',
-                    'medium'
+                    'action',
+                    'Action',
+                    'float-left small'
                 ));
                 break;
             case 'compDetails':
                 headers.push(new MComponentHeaderColumn(
-                    'componentCheck',
-                    'Component Check',
-                    'medium'
+                    'component',
+                    'Components',
+                    'float-left medium'
                 ));
-                headers.push(new MComponentHeaderColumn(
-                    'helpUsKnownMore',
-                    'Help us Know more about this component',
-                    'large'
-                ));
+                if (tabNo === 1) {
+                    headers.push(new MComponentHeaderColumn(
+                        'componentCheck',
+                        'Component Check',
+                        'float-left medium'
+                    ));
+                    headers.push(new MComponentHeaderColumn(
+                        'alternate',
+                        'Alternate Components',
+                        'float-left medium'
+                    ));
+                    headers.push(new MComponentHeaderColumn(
+                        'action',
+                        'Action',
+                        'float-left small'
+                    ));
+                } else if (tabNo === 2) {
+                    headers.push(new MComponentHeaderColumn(
+                        'helpUsKnownMore',
+                        'Help us Know more about this component',
+                        'float-left large'
+                    ));
+                }
                 break;
             default:
                 break;

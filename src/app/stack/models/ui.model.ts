@@ -12,8 +12,10 @@ export class MReportSummaryTitle {
 }
 
 export class MTab {
-    title: string;
-    content: MCardDetails;
+    constructor(
+        public title: string,
+        public content: MReportInformation
+    ) {}
 }
 
 export class MReportSummaryInfoEntry {
@@ -112,7 +114,6 @@ export class MRecommendationInformation {
 
 export class MComponentDetails {
     constructor(
-        public type: string,
         public componentInformation: MComponentInformation = null,
         public recommendationInformation: MRecommendationInformation = null
     ) {}
@@ -131,6 +132,7 @@ export class MComponentHeaderColumn {
 export class MReportInformation {
     constructor(
         public name: string,
+        public type: string,
         public headers: Array<MComponentHeaderColumn>,
         public componentDetails: Array<MComponentDetails>
     ) {}

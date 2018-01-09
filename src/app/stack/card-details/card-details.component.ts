@@ -10,6 +10,7 @@ import {
 
 import {
     MCardDetails,
+    MReportInformation,
     MTab
 } from '../models/ui.model';
 
@@ -21,7 +22,7 @@ import {
 export class CardDetailsComponent implements OnInit, OnChanges {
     @Input() details: MCardDetails;
 
-    public tabs: MTab = null;
+    public tabs: Array<MTab> = [];
 
     ngOnInit() {
         this.paint();
@@ -36,6 +37,17 @@ export class CardDetailsComponent implements OnInit, OnChanges {
     }
 
     private paint(): void {
-
+        this.tabs = [];
+        debugger;
+        if (this.details) {
+            if (this.details.reportInformations && this.details.reportInformations.length > 1) {
+                this.details.reportInformations.forEach((report: MReportInformation) => {
+                    this.tabs.push(new MTab(
+                        report.name,
+                        report
+                    ));
+                });
+            }
+        }
     }
 }
