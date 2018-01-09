@@ -44,7 +44,8 @@ export class StackDetailsComponent implements OnChanges {
     public customClass: string = 'accordion-custom';
     public analysis: any = {};
     public cve_Info: number;
-    public cve_url: string ="https://recommender.api.openshift.io/api/v1/stack-analyses/911da6d412384480b1014fa1158a9102";
+    public cve_url: string ="https://recommender.api.openshift.io/api/v1/stack-analyses/9037c252859e4a51afad3202be19093d";  //911da6d412384480b1014fa1158a9102"; 
+    //public cve_url: string ="https://recommender.api.openshift.io/api/v1/stack-analyses/21366a69513d4c87aa93af3e9bbac670";//"https://mvnrepository.com/artifact/com.h2database";
 
     public feedbackConfig: any = {};
 

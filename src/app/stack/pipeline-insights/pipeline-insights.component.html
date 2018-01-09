@@ -1,6 +1,17 @@
 <div class="pipeline-insights">
   <!-- <div class="pipeline-insights-btn" (click)="showStackModal($event)"></div> -->
-  <div class="imp_info" ><span [class]="symbol" style="padding-right:5px;"></span>CVE is {{cve_Info}}</div>
+  <div class="imp" *ngIf="flag||flag1">
+    <div class="imp_info" *ngIf="flag">
+      <span [class]="'pficon-error-circle-o'" style="padding-right:5px;" data-toggle="tooltip" title="CVE Issue">
+        CVE's are present
+      </span>
+    </div>
+    <div class="imp_info" *ngIf="flag1">
+      <span class="pficon-error-circle-o" style="padding-right:5px;" data-toggle="tooltip" title="Liscence Issue">
+        License Issue are present.
+      </span>
+    </div>
+  </div>
   <!-- <modal #stackModule modalClass="modal-lg modal-fullscreen">
   </modal> -->
 </div>
