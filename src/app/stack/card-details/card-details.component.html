@@ -2,7 +2,7 @@
     <h2 [innerText]="details?.title"></h2>
     <p [innerText]="details?.titleDescription"></p>
     <div *ngIf="details?.reportInformations && details?.reportInformations.length > 1">
-        <tabset *ngIf="dataLoaded">
+        <tabset *ngIf="true">
             <tab *ngFor="let tabz of tabs"
                 [heading]="tabz.title"
                 (select)="tabSelection(tabz)"

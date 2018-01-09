@@ -11,6 +11,11 @@ export class MReportSummaryTitle {
     // }
 }
 
+export class MTab {
+    title: string;
+    content: MCardDetails;
+}
+
 export class MReportSummaryInfoEntry {
     infoText: string;
     infoValue: any;
@@ -23,6 +28,7 @@ export class MReportSummaryContent {
 }
 
 export class MReportSummaryCard {
+    identifier: string;
     reportSummaryTitle: MReportSummaryTitle;
     reportSummaryDescription: string;
     reportSummaryContent: MReportSummaryContent;
@@ -30,83 +36,104 @@ export class MReportSummaryCard {
 }
 
 export class MProgressMeter {
-    headerText: string;
-    value: number;
-    bgColor: string;
-    footerText: string;
+    constructor(
+        public headerText: string,
+        public value: number,
+        public bgColor: string,
+        public footerText: string
+    ) {}
 }
 
 /** Bottom Section */
 export class MGithub {
-    contributors?: string = 'NA';
-    forks?: string = 'NA';
-    depRepos?: string = 'NA';
-    stars?: string = 'NA';
-    usage?: string = 'NA';
+    constructor(
+        public contributors: string = 'NA',
+        public forks: string = 'NA',
+        public depRepos: string = 'NA',
+        public stars: string = 'NA',
+        public usage: string = 'NA'
+    ) {}
 }
 
 export class MOsio {
-    usage?: string = 'NA';
+    constructor(usage: string = 'NA') {}
 }
 
 export class MCrowdSourcing {
-    tags: Array<string>;
-    canSuggestTags?: boolean = true;
+    constructor(
+        public tags: Array<string>,
+        public canSuggestTags: boolean = true
+    ) {}
 }
 
 export class MSecurityIssue {
-    cvss: string;
-    cve: string;
+    constructor(
+        public cvss: string,
+        public cve: string
+    ) {}
 }
 
 export class MSecurityDetails {
-    issues?: Array<MSecurityIssue> = null;
-    highestIssue?: MSecurityIssue = null;
-    progressReport?: MProgressMeter = null;
+    constructor(
+        public highestIssue: MSecurityIssue = null,
+        public progressReport: MProgressMeter = null,
+        public totalIssues: number = null
+    ) {}
 }
 
 export class MComponentInformation {
-    name: string;
-    currentVersion?: string = 'NA';
-    latestVersion?: string = 'NA';
-    securityDetails?: MSecurityDetails = null;
-    hasSecurityIssue?: boolean;
-    isUsageOutlier?: boolean;
-    hasLicenseIssue?: boolean;
-    licenses: Array<string>;
-    crowdSourcing: MCrowdSourcing;
-    github: MGithub;
-    osio: MOsio;
-    action?: string = null;
-    needsExpansion?: boolean = true;
-    recommendation?: MRecommendationInformation = null;
+    constructor(
+        public name: string,
+        public currentVersion: string = 'NA',
+        public latestVersion: string = 'NA',
+        public securityDetails: MSecurityDetails = null,
+        public hasSecurityIssue: boolean,
+        public isUsageOutlier: boolean,
+        public hasLicenseIssue: boolean,
+        public licenses: Array<string>,
+        public crowdSourcing: MCrowdSourcing,
+        public github: MGithub,
+        public osio: MOsio,
+        public action: string = null,
+        public needsExpansion: boolean = true,
+        public recommendation: MRecommendationInformation = null
+    ) {}
 }
 
-export class MRecommendationInformation extends MComponentInformation {
-    type: string; // Alternate or companion
-    reason?: string = null;
-    feedback?: boolean;
-    confidenceScore: MProgressMeter;
+export class MRecommendationInformation {
+    constructor(
+        public type: string, // Alternate or companion
+        public reason: string = null,
+        public feedback: boolean,
+        public confidenceScore: MProgressMeter,
+        public componentInformation: MComponentInformation
+    ) {}
 }
 
 export class MComponentDetails {
-    type: string;
-    componentInformation?: MComponentInformation = null;
-    recommendationInformation?: MRecommendationInformation = null;
+    constructor(
+        public type: string,
+        public componentInformation: MComponentInformation = null,
+        public recommendationInformation: MRecommendationInformation = null
+    ) {}
 }
 
 export class MComponentHeaderColumn {
-    identifier: string;
-    text: string;
-    className: string;
-    isSortable?: boolean = false;
-    isDragable?: boolean = false;
+    constructor(
+        public identifier: string,
+        public text: string,
+        public className: string,
+        public isSortable: boolean = false,
+        public isDragable: boolean = false
+    ) {}
 }
 
 export class MReportInformation {
-    name: string;
-    headers: Array<MComponentHeaderColumn>;
-    componentDetails: Array<MComponentDetails>;
+    constructor(
+        public name: string,
+        public headers: Array<MComponentHeaderColumn>,
+        public componentDetails: Array<MComponentDetails>
+    ) {}
 }
 
 export class MCardDetails {

@@ -2,13 +2,15 @@
 import {
     Component,
     Input,
+    OnInit,
     OnChanges,
     SimpleChanges
 } from '@angular/core';
 /** Vendor imports Go HERE */
 
 import {
-    MCardDetails
+    MCardDetails,
+    MTab
 } from '../models/ui.model';
 
 @Component({
@@ -16,13 +18,24 @@ import {
     styleUrls: ['./card-details.component.less'],
     templateUrl: './card-details.component.html'
 })
-export class CardDetailsComponent implements OnChanges {
+export class CardDetailsComponent implements OnInit, OnChanges {
     @Input() details: MCardDetails;
+
+    public tabs: MTab = null;
+
+    ngOnInit() {
+        this.paint();
+    }
 
     ngOnChanges(changes: SimpleChanges) {
         let summary: any = changes['details'];
         if (summary) {
             this.details = <MCardDetails> summary.currentValue;
+            this.paint();
         }
+    }
+
+    private paint(): void {
+
     }
 }
