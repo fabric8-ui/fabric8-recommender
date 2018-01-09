@@ -1,14 +1,14 @@
 <div class="analytics-component-information">
-    <div [class]="position?.className" *ngFor="let position of positions; let i = index;">
+    <div [class]="position?.className" *ngFor="let position of positions;">
         <div [ngSwitch]="position?.identifier">
             <!-- Security Card -->
             <div *ngSwitchCase="'serial'">
                 <!-- Serial Numbers -->
-                <span [innerText]="i + 1"></span>
+                <span [innerText]="serial"></span>
             </div>
             <div *ngSwitchCase="'component'">
                 <!-- Component Names -->
-                <span *ngIf="!component?.recommendation || (component?.recommendation?.type !== 'companion')" [innerText]="component?.name"></span>
+                <span [innerText]="component?.name"></span>
                 <!--
                     <reco-name [name]="component?.name" [reason]="component?.recommendation?.reason" *ngIf="component?.recommendation && (component?.recommendation?.type === 'companion')"></reco-name>
                 -->

@@ -5,12 +5,12 @@ import { CommonModule } from '@angular/common';
 import { TabsModule } from 'ngx-bootstrap';
 /** Vendor imports Go HERE */
 
-import { ComponentDetailsModule } from './component-details/component-details.module';
+import { ReportInformationModule } from './report-information/report-information.module';
 
 import { CardDetailsComponent } from './card-details.component';
 
 const imports = [
-    ComponentDetailsModule,
+    ReportInformationModule,
     TabsModule.forRoot()
 ];
 

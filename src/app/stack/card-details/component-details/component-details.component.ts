@@ -8,7 +8,8 @@ import {
 /** Vendor imports Go HERE */
 
 import {
-    MComponentDetails
+    MComponentDetails,
+    MComponentHeaderColumn
 } from '../../models/ui.model';
 
 @Component({
@@ -18,11 +19,18 @@ import {
 })
 export class ComponentDetailsComponent implements OnChanges {
     @Input() compDetails: MComponentDetails;
+    @Input() positions: Array<MComponentHeaderColumn>;
+    @Input() type: string;
+    @Input() serial: number;
 
     ngOnChanges(changes: SimpleChanges) {
+        debugger;
         let summary: any = changes['compDetails'];
         if (summary) {
             this.compDetails = <MComponentDetails> summary.currentValue;
+        }
+        if (changes['positions']) {
+            this.positions = changes['positions']['currentValue'];
         }
     }
 }
