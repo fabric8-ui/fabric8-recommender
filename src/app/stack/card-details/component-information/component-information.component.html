@@ -15,7 +15,7 @@
             </div>
             <div *ngSwitchCase="'cveCount'">
                 <!-- cveCount -->
-                <span [innerText]="component?.securityDetails && component?.securityDetails.length || 0"></span>
+                <span [innerText]="component?.securityDetails && component?.securityDetails.totalIssues || 0"></span>
             </div>
             <div *ngSwitchCase="'highestCVSS'">
                 <!-- highestCVSS -->
@@ -38,7 +38,7 @@
             <!-- Insights Card -->
             <div *ngSwitchCase="'alternate'">
                 <!-- alternate -->
-                <span [innerText]="component?.recommendation?.name"></span>
+                <span [innerText]="component?.recommendation?.componentInformation?.name"></span>
             </div>
             <div *ngSwitchCase="'feedback'">
                 <!-- feedback -->

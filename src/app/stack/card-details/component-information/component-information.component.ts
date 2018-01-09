@@ -26,7 +26,7 @@ export class ComponentInformationComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         debugger;
-        console.log(this.component);
+        console.log(this.component instanceof MRecommendationInformation);
         console.log(this.positions);
     }
 
