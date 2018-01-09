@@ -7,14 +7,7 @@ import { ModalModule } from 'ngx-modal';
 import {TabsModule, AccordionModule} from 'ngx-bootstrap';
 
 import { GlobalConstants } from '../constants/constants.service';
-import { StackDetailsComponent } from './stack-details.component';
-
-/** New UX */
-import {StackLevelModule} from '../stack-level/stack-level.module';
-import {PipelineInsightsModule} from '../pipeline-insights/pipeline-insights.module';
-import {ComponentLevelModule} from '../component-level/component-level.module';
-import {FeedbackModule} from '../feedback/feedback.module';
-/** New UX */
+import { PipelineInsightsComponent } from './pipeline-insights.component';
 
 @NgModule({
   imports: [
@@ -22,21 +15,18 @@ import {FeedbackModule} from '../feedback/feedback.module';
     HttpModule,
     FormsModule,
     ModalModule,
-    StackLevelModule,
-    PipelineInsightsModule,
-    ComponentLevelModule,
     AccordionModule.forRoot(),
     TabsModule.forRoot()
   ],
   declarations: [
-    StackDetailsComponent
+    PipelineInsightsComponent
   ],
   exports: [
-    StackDetailsComponent
+    PipelineInsightsComponent
   ],
   providers: [ GlobalConstants ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class StackDetailsModule {
+export class PipelineInsightsModule {
   constructor() {}
 }

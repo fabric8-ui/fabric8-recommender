@@ -1,5 +1,6 @@
 <div class="stack-report">
   <a class="stack-reports-btn" (click)="showStackModal($event)">{{displayName}}</a>
+  <pipleine-insights-details [url]="cve_url"></pipleine-insights-details>
   <modal #stackModule title="Stack report for {{appName}}, Build #{{buildNumber}}" modalClass="modal-lg modal-fullscreen modal-width-class" (onClose)="handleModalClose();" (onOpen)="init();">
     <modal-header>
         {{modalHeader}}
@@ -25,7 +26,7 @@
                             [Components: <b>{{analysis && analysis.stackLevel}}</b>]
                           </div>
                         </div>
-                        <stack-level-information (changeFilter)="handleChangeFilter($event)" [outliers]="stackLevelOutliers" [userStack]="tabz && tabz.content && tabz.content.user_stack_info"></stack-level-information>
+                        <stack-level-information (changeFilter)="handleChangeFilter($event)" [outliers]="stackLevelOutliers" [userStack]="tabz && tabz.content && tabz.content.user_stack_info" (sendcveInfo) = "getcve($event)"></stack-level-information>
                   </accordion-group>
                   <accordion-group #grouped [isOpen]="true" [panelClass]="customClass">
                     <div accordion-heading>

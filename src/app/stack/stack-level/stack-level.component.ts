@@ -14,6 +14,7 @@ export class StackLevelComponent {
     @Input() outliers: any;
 
     @Output() changeFilter: EventEmitter<any> = new EventEmitter();
+    @Output() sendcveInfo: EventEmitter<any> = new EventEmitter();
 
     // public licenseInfo: any = {};
     // public licenseOutliers: number = 0;
@@ -21,9 +22,14 @@ export class StackLevelComponent {
     public recommendations: any;
     public stackLevelOutliers: any;
     public licenseAnalysis: any;
+    public cveInfo: number;
 
     constructor() {}
 
+    public getcveInfo():any {
+        this.cveInfo = this.securityInfo.cve;
+        this.sendcveInfo.emit(this.cveInfo);
+    }
     ngOnChanges(): void {
         if (this.userStack) {
             this.handleLicenseInformation(this.userStack);
@@ -93,6 +99,7 @@ export class StackLevelComponent {
                 iconClass: iconClass,
                 displayClass: displayClass
             };
+            this.getcveInfo();
         }
     }
 
