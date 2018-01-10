@@ -38,7 +38,7 @@ export class StackDetailsComponent implements OnChanges {
     /**
      * New Stack Report Revamp - Begin
      */
-     public details: MCardDetails = null;
+     public cardDetails: any = {};
     /**
      * New Stack Report Revamp - End
      */
@@ -76,8 +76,8 @@ export class StackDetailsComponent implements OnChanges {
     /**
      * New Stack Report Revamp - Begin
      */
-    public handleCardClick(cardDetails: MCardDetails): void {
-        this.details = cardDetails;
+    public handleCardClick(cardDetails: any): void {
+        this.cardDetails = cardDetails;
     }
     /**
      * New Stack Report Revamp - End
