@@ -22,22 +22,34 @@ import {
 export class ComponentInformationComponent implements OnInit, OnChanges {
     @Input() component: MComponentInformation | MRecommendationInformation;
     @Input() positions: Array<MComponentHeaderColumn>;
+    public comp: MComponentInformation;
     @Input() serial: number;
+    @Input() type: string;
+
+    public paint(): void {
+        if (this.component) {
+            if (this.type === 'recommendation') {
+                let c = (<MRecommendationInformation>this.component);
+                this.comp = c && c.componentInformation;
+            } else {
+                this.comp = <MComponentInformation>this.component;
+            }
+        }
+        console.log(this.comp);
+    }
 
     ngOnInit() {
-        debugger;
-        console.log(this.component instanceof MRecommendationInformation);
-        console.log(this.positions);
+        this.paint();
     }
 
     ngOnChanges(changes: SimpleChanges) {
         let summary: any = changes['component'];
-        debugger;
         if (summary) {
             this.component = <MComponentInformation | MRecommendationInformation> summary.currentValue;
         }
         if (changes['positions']) {
             this.positions = changes['positions']['currentValue'];
         }
+        this.paint();
     }
 }

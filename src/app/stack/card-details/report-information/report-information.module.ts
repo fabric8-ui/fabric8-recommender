@@ -5,12 +5,14 @@ import { CommonModule } from '@angular/common';
 
 import { ProgressMeterModule } from '../../utils/progress-meter/progress-meter.module';
 
+import { ComponentSnippetComponent } from '../component-information/component-snippet/component-snippet.component';
 import { ComponentInformationComponent } from '../component-information/component-information.component';
 import { ComponentDetailsComponent } from '../component-details/component-details.component';
 
 import { ReportInformationComponent } from './report-information.component';
 
 const components = [
+    ComponentSnippetComponent,
     ComponentInformationComponent,
     ComponentDetailsComponent,
     ReportInformationComponent

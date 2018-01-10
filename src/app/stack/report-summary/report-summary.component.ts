@@ -26,17 +26,8 @@ import {
     MReportSummaryContent,
     MReportSummaryInfoEntry,
     MReportSummaryTitle,
-    MCardDetails,
-    MComponentHeaderColumn,
-    MReportInformation,
-    MComponentDetails,
-    MComponentInformation,
-    MRecommendationInformation,
     MSecurityDetails,
     MSecurityIssue,
-    MCrowdSourcing,
-    MGithub,
-    MOsio,
     MProgressMeter
 } from '../models/ui.model';
 import { ReportSummaryUtils } from '../utils/report-summary-utils';
@@ -48,7 +39,7 @@ import { ReportSummaryUtils } from '../utils/report-summary-utils';
 })
 export class ReportSummaryComponent implements OnInit, OnChanges {
     @Input() report: ResultInformationModel;
-    @Output('onCardClick') onCardClick = new EventEmitter<MCardDetails>();
+    @Output('onCardClick') onCardClick = new EventEmitter<any>();
 
     public reportSummaryCards: Array<MReportSummaryCard> = [];
 
@@ -102,336 +93,12 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
 
     public handleSummaryClick(card: MReportSummaryCard): void {
         if (card) {
-            let details: MCardDetails = new MCardDetails();
             let cardType: string = card.identifier || '';
-            let { title, description } = this.getTitleAndDescription(cardType);
-
-            details.reportInformations = this.getUIReportInformations(cardType);
-            details.isMultiple = true;
-            details.title = title;
-            details.titleDescription = description;
-            this.onCardClick.emit(details);
-        }
-    }
-
-    private getUIReportInformations(cardType: string): Array<MReportInformation> {
-        let reportInformations: Array<MReportInformation> = [];
-        let componentDetails: Array<MComponentDetails> = [];
-        let componentInformation: MComponentInformation = null;
-        let recommendationInformation: MRecommendationInformation = null;
-        let securityDetails: MSecurityDetails = null;
-        let crowd: MCrowdSourcing = null;
-        let github: MGithub = null;
-        let osio: MOsio = null;
-        let headers: Array<MComponentHeaderColumn> = this.fillColumnHeaders(cardType);
-        let compInfoType: string = 'component';
-
-        let components: Array<ComponentInformationModel> = null;
-        if (this.report.user_stack_info
-            && this.report.user_stack_info.analyzed_dependencies
-            && this.report.user_stack_info.analyzed_dependencies.length > 0) {
-           components = this.report.user_stack_info.analyzed_dependencies;
-        }
-        if (components) {
-            components.forEach((component: ComponentInformationModel) => {
-                componentInformation = this.getComponentInformation(component);
-                componentDetails.push(new MComponentDetails(
-                    componentInformation,
-                    recommendationInformation
-                ));
+            this.onCardClick.emit({
+                cardType: cardType,
+                report: this.report
             });
-
-            let genericReport: MReportInformation = new MReportInformation(
-                null,
-                'component',
-                this.fillColumnHeaders(cardType, 1),
-                componentDetails
-            );
-
-            switch (cardType) {
-                case 'security':
-                    genericReport.name = 'securityTab';
-                    reportInformations.push(genericReport);
-                    break;
-                case 'insights':
-                    genericReport.name = 'Usage Outlier Details';
-                    reportInformations.push(genericReport);
-                    reportInformations.push(new MReportInformation(
-                        'Companion Component Details',
-                        'recommendation',
-                        this.fillColumnHeaders(cardType, 2),
-                        componentDetails
-                    ));
-                    break;
-                case 'licenses':
-                    genericReport.name = 'Conflict License(s) details';
-                    reportInformations.push(genericReport);
-                    reportInformations.push(new MReportInformation(
-                        'Unknown license(s) details',
-                        'component',
-                        this.fillColumnHeaders(cardType, 2),
-                        componentDetails
-                    ));
-                    break;
-                case 'compDetails':
-                    genericReport.name = 'Analyzed component Details';
-                    reportInformations.push(genericReport);
-                    reportInformations.push(new MReportInformation(
-                        'Unknown Component details',
-                        'component',
-                        this.fillColumnHeaders(cardType, 2),
-                        componentDetails
-                    ));
-                    break;
-                default:
-                    break;
-            }
-            return reportInformations;
         }
-        return null;
-    }
-
-    private getComponentInformation(component: ComponentInformationModel): MComponentInformation {
-        if (component) {
-            let currentVersion: string = component.version;
-            let latestVersion: string = component.latest_version;
-            let github: GithubModel = component.github;
-            let hasLicenseIssue: boolean = component.license_analysis && component.license_analysis.conflict_licenses && component.license_analysis.conflict_licenses.length > 0;
-            let isUsageOutlier: boolean = false;
-            let securityDetails: MSecurityDetails = this.getComponentSecurity(component);
-            let recommendation: RecommendationsModel = this.report.recommendation;
-            let recommendationInformation: MRecommendationInformation = null;
-            let usageOutliers: Array<OutlierInformationModel> = null;
-            if (recommendation) {
-                usageOutliers = recommendation.usage_outliers;
-                if (usageOutliers) {
-                    let outlierLen: number = usageOutliers.length;
-                    for (let i = 0; i < outlierLen; ++ i) {
-                        if (component.name === usageOutliers[i].package_name) {
-                            isUsageOutlier = true;
-                            break;
-                        }
-                    }
-                }
-                if (recommendation.alternate && recommendation.alternate.length > 0) {
-                    let alternates: Array<ComponentInformationModel> = recommendation.alternate;
-                    let alternatesLen: number = alternates.length;
-                    for (let i = 0; i < alternatesLen; ++ i) {
-                        if (alternates[i].replaces && alternates[i].replaces[0] && alternates[i].replaces[0].name) {
-                            let alternate: ComponentInformationModel = alternates[i];
-                            if (component.name === alternate.replaces[0].name) {
-                                let alterSecurity: MSecurityDetails = this.getComponentSecurity(alternate);
-                                recommendationInformation = new MRecommendationInformation(
-                                    'alternate',
-                                    alternate.reason,
-                                    false,
-                                    new MProgressMeter(
-                                        '',
-                                        alternate.confidence_reason,
-                                        alternate.confidence_reason > 50 ? 'GREEN' : 'ORANGE',
-                                        ''
-                                    ),
-                                    new MComponentInformation(
-                                        alternate.name,
-                                        alternate.version,
-                                        alternate.latest_version,
-                                        alterSecurity,
-                                        alterSecurity !== null,
-                                        false,
-                                        false,
-                                        alternate.licenses,
-                                        new MCrowdSourcing(alternate.topic_list),
-                                        new MGithub(
-                                            alternate.github.contributors.toString(),
-                                            alternate.github.forks_count.toString(),
-                                            alternate.github.dependent_repos.toString(),
-                                            alternate.github.stargazers_count.toString(),
-                                            alternate.github.used_by.toString()
-                                        ),
-                                        new MOsio(alternate.osio_user_count.toString()),
-                                        'Create work item',
-                                        false,
-                                        null
-                                    )
-                                );
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            return new MComponentInformation(
-                component.name,
-                currentVersion,
-                latestVersion,
-                securityDetails,
-                securityDetails !== null,
-                isUsageOutlier,
-                hasLicenseIssue,
-                component.licenses,
-                new MCrowdSourcing(
-                    component.topic_list
-                ),
-                new MGithub(
-                    github.contributors.toString(),
-                    github.forks_count.toString(),
-                    github.dependent_repos.toString(),
-                    github.stargazers_count.toString(),
-                    github.used_by.toString()
-                ),
-                new MOsio(component.osio_user_count.toString()),
-                null,
-                true,
-                recommendationInformation
-            );
-        }
-        return null;
-    }
-
-    private getComponentSecurity(component: ComponentInformationModel): MSecurityDetails {
-        return this.getComponentSecurityInformation(component);
-    }
-
-    private getTitleAndDescription(cardType: string): any {
-        let { title, description } = this.titleAndDescription[cardType];
-        return {
-            title: title,
-            description: description
-        };
-    }
-
-    private fillColumnHeaders(cardType: string, tabNo: number = null): Array<MComponentHeaderColumn> {
-        let headers: Array<MComponentHeaderColumn> = [];
-
-        headers.push(new MComponentHeaderColumn(
-            'serial',
-            '#',
-            'float-left extra-small'
-        ));
-        switch (cardType) {
-            case 'security':
-                headers.push(new MComponentHeaderColumn(
-                    'component',
-                    'Components',
-                    'float-left medium'
-                ));
-                headers.push(new MComponentHeaderColumn(
-                    'action',
-                    'Action',
-                    'float-left small'
-                ));
-                headers.push(new MComponentHeaderColumn(
-                    'cveCount',
-                    'No. of CVE(s)',
-                    'float-left small'
-                ));
-                headers.push(new MComponentHeaderColumn(
-                    'highestCVSS',
-                    'Highest CVSS Score',
-                    'float-left medium'
-                ));
-                headers.push(new MComponentHeaderColumn(
-                    'cveIdOfH',
-                    'CVE ID of highest CVSS score',
-                    'float-left medium'
-                ));
-                break;
-            case 'insights':
-                headers.push(new MComponentHeaderColumn(
-                    'component',
-                    'Components',
-                    'float-left medium'
-                ));
-                if (tabNo === 1) {
-                    headers.push(new MComponentHeaderColumn(
-                        'alternate',
-                        'Alternate Components',
-                        'float-left medium'
-                    ));
-                } else if (tabNo === 2) {
-
-                }
-                headers.push(new MComponentHeaderColumn(
-                    'confidence',
-                    'Confidence Score',
-                    'float-left medium'
-                ));
-                headers.push(new MComponentHeaderColumn(
-                    'feedback',
-                    'Feedback',
-                    'float-left small'
-                ));
-                headers.push(new MComponentHeaderColumn(
-                    'action',
-                    'Action',
-                    'float-left small'
-                ));
-                break;
-            case 'licenses':
-                headers.push(new MComponentHeaderColumn(
-                    'component',
-                    'Components',
-                    'float-left medium'
-                ));
-                if (tabNo === 1) {
-                    headers.push(new MComponentHeaderColumn(
-                        'licensesAffected',
-                        'Licenses Affected',
-                        'float-left medium'
-                    ));
-
-                } else if (tabNo === 2) {
-                    headers.push(new MComponentHeaderColumn(
-                        'unknownLicenses',
-                        'Unknown License',
-                        'float-left medium'
-                    ));
-                }
-                headers.push(new MComponentHeaderColumn(
-                    'alternate',
-                    'Alternate Components',
-                    'float-left medium'
-                ));
-                headers.push(new MComponentHeaderColumn(
-                    'action',
-                    'Action',
-                    'float-left small'
-                ));
-                break;
-            case 'compDetails':
-                headers.push(new MComponentHeaderColumn(
-                    'component',
-                    'Components',
-                    'float-left medium'
-                ));
-                if (tabNo === 1) {
-                    headers.push(new MComponentHeaderColumn(
-                        'componentCheck',
-                        'Component Check',
-                        'float-left medium'
-                    ));
-                    headers.push(new MComponentHeaderColumn(
-                        'alternate',
-                        'Alternate Components',
-                        'float-left medium'
-                    ));
-                    headers.push(new MComponentHeaderColumn(
-                        'action',
-                        'Action',
-                        'float-left small'
-                    ));
-                } else if (tabNo === 2) {
-                    headers.push(new MComponentHeaderColumn(
-                        'helpUsKnownMore',
-                        'Help us Know more about this component',
-                        'float-left large'
-                    ));
-                }
-                break;
-            default:
-                break;
-        }
-        return headers;
     }
 
     private newCardInstance(): MReportSummaryCard {
@@ -468,7 +135,8 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
                     '',
                     Number(maxIssue.CVSS),
                     Number(maxIssue.CVSS) >= 7 ? '#ff6162' : 'ORANGE',
-                    ''
+                    '',
+                    Number(maxIssue.CVSS) * 10
                 );
             }
             securityDetails.totalIssues = securityIssues;

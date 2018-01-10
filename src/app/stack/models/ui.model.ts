@@ -42,23 +42,25 @@ export class MProgressMeter {
         public headerText: string,
         public value: number,
         public bgColor: string,
-        public footerText: string
+        public footerText: string,
+        public width: number
     ) {}
 }
 
 /** Bottom Section */
 export class MGithub {
     constructor(
-        public contributors: string = 'NA',
-        public forks: string = 'NA',
-        public depRepos: string = 'NA',
-        public stars: string = 'NA',
-        public usage: string = 'NA'
+        public contributors: number = -1,
+        public forks: number = -1,
+        public depRepos: number = -1,
+        public stars: number = -1,
+        public usage: number = -1,
+        public users: Array<any>
     ) {}
 }
 
 export class MOsio {
-    constructor(usage: string = 'NA') {}
+    constructor(usage: number = -1) {}
 }
 
 export class MCrowdSourcing {
@@ -98,7 +100,8 @@ export class MComponentInformation {
         public osio: MOsio,
         public action: string = null,
         public needsExpansion: boolean = true,
-        public recommendation: MRecommendationInformation = null
+        public recommendation: MRecommendationInformation = null,
+        public isOpen: boolean = false
     ) {}
 }
 

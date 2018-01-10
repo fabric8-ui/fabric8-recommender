@@ -24,7 +24,6 @@ export class ComponentDetailsComponent implements OnChanges {
     @Input() serial: number;
 
     ngOnChanges(changes: SimpleChanges) {
-        debugger;
         let summary: any = changes['compDetails'];
         if (summary) {
             this.compDetails = <MComponentDetails> summary.currentValue;
