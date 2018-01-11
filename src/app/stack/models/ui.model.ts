@@ -26,6 +26,7 @@ export class MReportSummaryCard {
     reportSummaryTitle: MReportSummaryTitle;
     reportSummaryDescription: string;
     reportSummaryContent: MReportSummaryContent;
+    hasWarning?: boolean;
 }
 
 export class MProgressMeter {
