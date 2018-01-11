@@ -273,7 +273,6 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                 case 'licenses':
                     genericReport.name = 'Conflict License(s) details';
                     reportInformations.push(genericReport);
-                    debugger;
                     reportInformations.push(new MReportInformation(
                         'Unknown license(s) details',
                         'component',
@@ -307,7 +306,6 @@ export class CardDetailsComponent implements OnInit, OnChanges {
     }
 
     private getUnknownLicenseComponentDetails(): Array<MComponentDetails> {
-        debugger;
         let unknownLicenseComps: Array<MComponentDetails> = null;
         let components: Array<ComponentInformationModel> = null;
         if (this.report.user_stack_info
@@ -386,7 +384,6 @@ export class CardDetailsComponent implements OnInit, OnChanges {
             let latestVersion: string = component.latest_version;
             let github: GithubModel = component.github;
             let hasLicenseIssue: boolean = this.hasLicenseIssue(component);
-            debugger;
             let isUsageOutlier: boolean = false;
             let securityDetails: MSecurityDetails = this.getComponentSecurity(component);
             let recommendation: RecommendationsModel = this.report.recommendation;

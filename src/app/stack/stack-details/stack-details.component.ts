@@ -14,6 +14,7 @@ import {
     MCardDetails,
     MGenericStackInformation
 } from '../models/ui.model';
+import { SaveState } from '../utils/SaveState';
 /**
  * New Stack Report Revamp - End
  */
@@ -223,6 +224,7 @@ export class StackDetailsComponent implements OnChanges {
         this.componentLevelInformation = {};
         this.companionLevelRecommendation = {};
         this.cacheResponse = {};
+        SaveState.ELEMENTS = [];
         // this.dataLoaded = false;
     }
 
