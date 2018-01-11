@@ -44,7 +44,36 @@
         height: 15px;
         background: #ccc;
         display: inline-block;
-        margin: 0 5px;
+        margin: 0 25px 0 0;
+        position: relative;
+        .pseudo-text-class {
+            color: #7e7e7e;
+            display: block;
+            position: absolute;
+            text-align: center;
+            bottom: -20px;
+            left: -7px;
+            font-size: 10px;
+        }
+
+        &.security {
+            &:after {
+                content: 'Security';
+                .pseudo-text-class;
+            }
+        }
+        &.usage {
+            &:after {
+                content: 'Usage';
+                .pseudo-text-class;
+            }
+        }
+        &.license {
+            &:after {
+                content: 'License';
+                .pseudo-text-class;
+            }
+        }
 
         &.usage-outlier {
             background: #ff6162;
