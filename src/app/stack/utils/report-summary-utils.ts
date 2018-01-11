@@ -15,12 +15,22 @@ import {
 export class ReportSummaryUtils {
     public notification: any = {
         warning: {
-            bg: '#ff6162',
+            bg: '#d1011c',
             icon: 'pficon-warning-triangle-o'
         },
         good: {
-            bg: 'GREEN',
+            bg: '#6dc663',
             icon: 'fa fa-check'
+        }
+    };
+
+    public colors: any = {
+        security: {
+            warning: '#d1011c',
+            moderate: '#f5a625'
+        },
+        confidence: {
+            good: '#6dc663'
         }
     };
 
@@ -116,7 +126,7 @@ export class ReportSummaryUtils {
                 maxIssueEntry.config = {
                     headerText: maxIssue.CVSS + ' / ' + 10,
                     value: Number(maxIssue.CVSS),
-                    bgColor: Number(maxIssue.CVSS) >= 7 ? '#ff6162' : 'ORANGE',
+                    bgColor: Number(maxIssue.CVSS) >= 7 ? this.colors.security.warning : this.colors.security.moderate,
                     footerText: 'No. of components with this CVSS Score: ' + totalComponentsWithMaxScore
                 };
                 securityCard.reportSummaryContent.infoEntries.push(maxIssueEntry);
@@ -124,8 +134,8 @@ export class ReportSummaryUtils {
                 securityCard.reportSummaryTitle.notificationIconBgColor = this.notification.warning.bg;
                 securityCard.hasWarning = true;
             } else {
-                securityCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
-                securityCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
+                // securityCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
+                // securityCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
                 securityCard.hasWarning = false;
             }
 
@@ -164,8 +174,8 @@ export class ReportSummaryUtils {
             companionInsights.infoValue = companionCount;
             insightsCard.reportSummaryContent.infoEntries.push(companionInsights);
 
-            insightsCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
-            insightsCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
+            // insightsCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
+            // insightsCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
             insightsCard.hasWarning = false;
             if (usageOutliersCount > 0) {
                 insightsCard.reportSummaryTitle.notificationIcon = this.notification.warning.icon;
@@ -211,8 +221,8 @@ export class ReportSummaryUtils {
             unknownLicense.infoValue = unknownLicenses ? unknownLicenses.length : 0;
             licensesCard.reportSummaryContent.infoEntries.push(unknownLicense);
 
-            licensesCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
-            licensesCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
+            // licensesCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
+            // licensesCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
             licensesCard.hasWarning = false;
             if (conflictLicenses.length > 0 || unknownLicenses.length > 0) {
                 licensesCard.reportSummaryTitle.notificationIcon = this.notification.warning.icon;

@@ -676,7 +676,7 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                 headers.push(new MComponentHeaderColumn(
                     'confidence',
                     'Confidence Score',
-                    'float-left medium'
+                    'float-left extra-medium'
                 ));
                 headers.push(new MComponentHeaderColumn(
                     'feedback',
