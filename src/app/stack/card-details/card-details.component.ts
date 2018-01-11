@@ -55,6 +55,7 @@ import {
 export class CardDetailsComponent implements OnInit, OnChanges {
     @Input() cardDetails: any;
     @Input() genericInformation: MGenericStackInformation;
+    @Input() repoInfo: any;
     public report: ResultInformationModel;
     public whatCard: string;
     public details: MCardDetails = null;
@@ -93,16 +94,14 @@ export class CardDetailsComponent implements OnInit, OnChanges {
     };
 
     ngOnInit() {
-        
         this.paint();
     }
 
     ngOnChanges(changes: SimpleChanges) {
         let summary: any = changes['cardDetails'];
-        
+
         if (summary) {
             this.cardDetails = <any> summary.currentValue;
-            
             if (this.cardDetails && this.cardDetails.report) {
                 this.report = this.cardDetails.report;
             } else {
@@ -197,7 +196,8 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                             false,
                             null,
                             companion.ecosystem
-                        )
+                        ),
+                        this.report.manifest_file_path
                     ));
                 });
             }
@@ -501,7 +501,8 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                     hasLicenseIssue,
                     this.getMLicenseAffected(component)
                 ),
-                component.ecosystem
+                component.ecosystem,
+                this.report.manifest_file_path
             );
         }
         return null;

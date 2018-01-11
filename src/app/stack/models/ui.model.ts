@@ -95,6 +95,13 @@ export class MLicenseInformation {
     ) {}
 }
 
+export class MWorkItem {
+    constructor(
+        public isWorkItemCreated = false,
+        public url?: string
+    ) {}
+}
+
 export class MComponentInformation {
     constructor(
         public name: string,
@@ -113,7 +120,9 @@ export class MComponentInformation {
         public recommendation: MRecommendationInformation = null,
         public isOpen: boolean = false,
         public licenseInformation: MLicenseInformation,
-        public ecosystem: string
+        public ecosystem: string,
+        public manifestFilePath?: string,
+        public workItem = new MWorkItem()
     ) {}
 }
 
@@ -146,7 +155,9 @@ export class MRecommendationInformation {
         public reason: string = null,
         public feedback: MComponentFeedback = null,
         public confidenceScore: MProgressMeter,
-        public componentInformation: MComponentInformation
+        public componentInformation: MComponentInformation,
+        public manifestFilePath?: string,
+        public workItem = new MWorkItem()
     ) {}
 }
 
