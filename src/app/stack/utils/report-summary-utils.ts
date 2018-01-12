@@ -206,20 +206,45 @@ export class ReportSummaryUtils {
             let stackLicense: MReportSummaryInfoEntry = new MReportSummaryInfoEntry();
             stackLicense.infoText = 'Stack Level License';
             let stackLicenses = licenseAnalysis.f8a_stack_licenses;
-            stackLicense.infoValue = stackLicenses && stackLicenses.length > 0 ? stackLicenses[0] : 'NONE';
+            if (stackLicenses) {
+                if (stackLicenses.length > 0) {
+                    stackLicense.infoValue = stackLicenses[0];
+                } else {
+                    stackLicense.infoValue = 'None';
+                    if (licenseAnalysis.status && licenseAnalysis.status.toLowerCase() === 'failure') {
+                        stackLicense.infoValue = 'Failure';
+                    }
+                }
+            } else {
+                // Null
+            }
             licensesCard.reportSummaryContent.infoEntries.push(stackLicense);
 
             let conflictLicense: MReportSummaryInfoEntry = new MReportSummaryInfoEntry();
             conflictLicense.infoText = 'License Conflicts';
             let conflictLicenses = licenseAnalysis.conflict_packages;
             conflictLicense.infoValue = conflictLicenses ? conflictLicenses.length : 0;
+            if (stackLicense.infoValue === 'Failure') {
+                conflictLicense.infoValue = 'NA';
+            }
             licensesCard.reportSummaryContent.infoEntries.push(conflictLicense);
 
             let unknownLicense: MReportSummaryInfoEntry = new MReportSummaryInfoEntry();
             unknownLicense.infoText = 'Unknown Licenses';
             let unknownLicenses = licenseAnalysis.unknown_licenses.really_unknown;
             unknownLicense.infoValue = unknownLicenses ? unknownLicenses.length : 0;
+            if (stackLicense.infoValue === 'Failure') {
+                unknownLicense.infoValue = 'NA';
+            }
             licensesCard.reportSummaryContent.infoEntries.push(unknownLicense);
+
+            if (stackLicense.infoValue !== 'NONE' && stackLicense.infoValue !== 'Failure') {
+                let restrictiveLicenses: MReportSummaryInfoEntry = new MReportSummaryInfoEntry();
+            restrictiveLicenses.infoText = 'Restrictive License(s)';
+                let restrictive = licenseAnalysis.outlier_packages;
+                restrictiveLicenses.infoValue = restrictive ? restrictive.length : 0;
+                licensesCard.reportSummaryContent.infoEntries.push(restrictiveLicenses);
+            }
 
             // licensesCard.reportSummaryTitle.notificationIcon = this.notification.good.icon;
             // licensesCard.reportSummaryTitle.notificationIconBgColor = this.notification.good.bg;
