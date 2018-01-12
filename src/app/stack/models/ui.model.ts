@@ -143,7 +143,7 @@ export class MRecommendationInformation {
     constructor(
         public type: string, // Alternate or companion
         public reason: string = null,
-        public feedback: boolean,
+        public feedback: MComponentFeedback = null,
         public confidenceScore: MProgressMeter,
         public componentInformation: MComponentInformation
     ) {}
@@ -184,7 +184,8 @@ export class MCardDetails {
 
 export class MGenericStackInformation {
     constructor(
-        public stackId: string
+        public stackId: string,
+        public baseUrl: string
     ) {}
 }
 

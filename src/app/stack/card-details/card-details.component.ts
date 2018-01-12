@@ -42,7 +42,8 @@ import {
     MLicensesAffected,
     MConflictsWithInLicenses,
     MStackLicenseConflictDetails,
-    MLicenseInformation
+    MLicenseInformation,
+    MComponentFeedback
 } from '../models/ui.model';
 
 @Component({
@@ -134,6 +135,18 @@ export class CardDetailsComponent implements OnInit, OnChanges {
             return processFlag;
         }
         return false;
+    }
+
+    private getMComponentFeedback(): MComponentFeedback {
+        let feedback: MComponentFeedback = null;
+        feedback = new MComponentFeedback(
+            '',
+            '',
+            '',
+            null,
+            ''
+        );
+        return feedback;
     }
 
     private getCompanionComponents(): Array<MRecommendationInformation> {
@@ -421,7 +434,7 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                                 recommendationInformation = new MRecommendationInformation(
                                     'alternate',
                                     alternate.reason,
-                                    false,
+                                    null,
                                     progress,
                                     new MComponentInformation(
                                         alternate.name,
