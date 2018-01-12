@@ -44,19 +44,19 @@ export class ReportSummaryUtils {
     public titleAndDescription: any = {
         [this.cardTypes.SECURITY]: {
             title: 'Components with security issues in your stack',
-            description: 'Description'
+            description: 'OSIO Analytics has identified security issues in your stack. Click this card to see further details of the security tasks affecting your stack.'
         },
         [this.cardTypes.INSIGHTS]: {
             title: 'Insights on alternate or additional components that can augment your stack',
-            description: 'Description'
+            description: 'OSIO Analytics has identified components that are rarely used in similar stacks, and suggest (suggests) alternate and additional components that can enhance your stack. Click this card to see detailed suggestions on alternate and additional components for your stack.'
         },
         [this.cardTypes.LICENSES]: {
             title: 'License details of components in your stack',
-            description: 'Description'
+            description: 'OSIO Analytics identifies the stack level license, the conflicting licenses, and the unknown licenses for your stack. Click this card to see detailed information on the conflicting and unknown licenses in your stack.'
         },
         [this.cardTypes.COMP_DETAILS]: {
             title: 'Component details of your manifest file',
-            description: 'Description'
+            description: 'OSIO Analytics identifies the total number of components, analyzes them, and provides details on security, usage, and license issues in your components. It also lists components unknown to OSIO.'
         }
     };
 
@@ -72,7 +72,7 @@ export class ReportSummaryUtils {
         securityCard.identifier = this.cardTypes.SECURITY;
         securityCard.reportSummaryTitle.titleIcon = 'fa fa-shield';
         securityCard.reportSummaryDescription =
-            'This shows the Security Description and it can go to more than a line';
+            this.titleAndDescription[this.cardTypes.SECURITY].description;
         securityCard.reportSummaryTitle.titleText = 'Security Issues';
         securityCard.reportSummaryContent.infoEntries = [];
 
@@ -150,7 +150,7 @@ export class ReportSummaryUtils {
         insightsCard.identifier = this.cardTypes.INSIGHTS;
         insightsCard.reportSummaryTitle.titleText = 'Insights';
         insightsCard.reportSummaryTitle.titleIcon = 'pficon-zone';
-        insightsCard.reportSummaryDescription = 'This shows the Insights Description and it can go to more than a line';
+        insightsCard.reportSummaryDescription = this.titleAndDescription[this.cardTypes.INSIGHTS].description;
         insightsCard.reportSummaryContent.infoEntries = [];
 
         let usageOutliersCount: number = 0, companionCount: number = 0;
@@ -195,7 +195,7 @@ export class ReportSummaryUtils {
         licensesCard.identifier = this.cardTypes.LICENSES;
         licensesCard.reportSummaryTitle.titleText = 'Licenses';
         licensesCard.reportSummaryTitle.titleIcon = 'fa fa-bolt';
-        licensesCard.reportSummaryDescription = 'This shows the Licenses Description and it can go to more than a line';
+        licensesCard.reportSummaryDescription = this.titleAndDescription[this.cardTypes.LICENSES].description;
         licensesCard.reportSummaryContent.infoEntries = [];
 
         if (userStackInfo &&

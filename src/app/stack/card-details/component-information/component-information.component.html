@@ -47,7 +47,7 @@
                         </div>
                         <div *ngSwitchCase="'feedback'">
                             <!-- feedback -->
-                            <component-feedback [feedback]="comp?.recommendation?.feedback || component?.feedback"></component-feedback>
+                            <component-feedback [feedback]="component?.recommendation?.feedback || component?.feedback"></component-feedback>
                         </div>
                         <div *ngSwitchCase="'confidence'">
                             <!-- confidence -->

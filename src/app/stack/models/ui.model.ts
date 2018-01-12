@@ -112,7 +112,8 @@ export class MComponentInformation {
         public needsExpansion: boolean = true,
         public recommendation: MRecommendationInformation = null,
         public isOpen: boolean = false,
-        public licenseInformation: MLicenseInformation
+        public licenseInformation: MLicenseInformation,
+        public ecosystem: string
     ) {}
 }
 
@@ -191,10 +192,10 @@ export class MGenericStackInformation {
 
 export class MComponentFeedback {
     constructor(
-        public stackId: string,
-        public recommendationType: string,
-        public packageName: string,
-        public feedbackType: boolean = null,
+        public stack_id: string,
+        public recommendation_type: string,
+        public package_name: string,
+        public feedback_type: boolean = null,
         public ecosystem: string
     ) {}
 }
