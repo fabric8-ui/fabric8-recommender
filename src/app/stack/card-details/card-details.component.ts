@@ -598,7 +598,7 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                     maxIssue.CVE
                 );
                 securityDetails.progressReport = new MProgressMeter(
-                    '',
+                    Number(maxIssue.CVSS) + '/10',
                     Number(maxIssue.CVSS),
                     Number(maxIssue.CVSS) >= 7 ? '#ff6162' : 'ORANGE',
                     '',
