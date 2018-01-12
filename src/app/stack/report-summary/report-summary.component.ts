@@ -206,6 +206,8 @@ export class ReportSummaryComponent implements OnInit, OnChanges {
             cards[3] = this.getComponentDetailsReportCard();
         }
         this.reportSummaryCards = cards;
+        // Select the first card by default
+        this.handleSummaryClick(cards[0]);
     }
 
     private paintView(): void {

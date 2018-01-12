@@ -206,7 +206,7 @@ export class ReportSummaryUtils {
             let stackLicense: MReportSummaryInfoEntry = new MReportSummaryInfoEntry();
             stackLicense.infoText = 'Stack Level License';
             let stackLicenses = licenseAnalysis.f8a_stack_licenses;
-            stackLicense.infoValue = stackLicenses && stackLicenses.length > 0 ? stackLicense[0] : 'NONE';
+            stackLicense.infoValue = stackLicenses && stackLicenses.length > 0 ? stackLicenses[0] : 'NONE';
             licensesCard.reportSummaryContent.infoEntries.push(stackLicense);
 
             let conflictLicense: MReportSummaryInfoEntry = new MReportSummaryInfoEntry();
