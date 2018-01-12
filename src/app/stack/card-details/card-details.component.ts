@@ -313,7 +313,19 @@ export class CardDetailsComponent implements OnInit, OnChanges {
 
     private hasUnknownLicense(component: ComponentInformationModel): boolean {
         if (component) {
-            return component.license_analysis && component.license_analysis.unknown_licenses && component.license_analysis.unknown_licenses.length > 0;
+            let licenseAnalysis: StackLicenseAnalysisModel = this.getLicensesAnalysis();
+            if (licenseAnalysis &&
+                licenseAnalysis.unknown_licenses &&
+                licenseAnalysis.unknown_licenses.really_unknown &&
+                licenseAnalysis.unknown_licenses.really_unknown.length > 0
+            ) {
+                let reallyUnknown = licenseAnalysis.unknown_licenses.really_unknown;
+                reallyUnknown.forEach((unknown) => {
+                    if (unknown.package === component.name) {
+                        return true;
+                    }
+                });
+            }
         }
         return false;
     }
