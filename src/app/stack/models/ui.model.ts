@@ -201,13 +201,20 @@ export class MGenericStackInformation {
     ) {}
 }
 
-export class MComponentFeedback {
+export class MFeedbackTemplate {
     constructor(
         public stack_id: string,
         public recommendation_type: string,
         public package_name: string,
         public feedback_type: boolean = null,
         public ecosystem: string
+    ) {}
+}
+
+export class MComponentFeedback {
+    constructor(
+        public feedbackTemplate: MFeedbackTemplate,
+        public baseUrl: string
     ) {}
 }
 /** Bottom Section */
