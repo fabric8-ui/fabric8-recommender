@@ -27,8 +27,8 @@ export class ComponentFeedbackComponent implements OnChanges {
 
     public handleFeedback(event: MouseEvent, type: boolean): void {
         event.stopPropagation();
-        if (this.feedback) {
-            this.feedback.feedback_type = type;
+        if (this.feedback && this.feedback.feedbackTemplate) {
+            this.feedback.feedbackTemplate.feedback_type = type;
             let subscription = this.feedbackService.postFeedback(this.feedback);
             if (subscription) {
                 subscription.subscribe((result) => {

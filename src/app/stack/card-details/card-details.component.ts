@@ -43,7 +43,8 @@ import {
     MConflictsWithInLicenses,
     MStackLicenseConflictDetails,
     MLicenseInformation,
-    MComponentFeedback
+    MComponentFeedback,
+    MFeedbackTemplate
 } from '../models/ui.model';
 
 @Component({
@@ -140,11 +141,14 @@ export class CardDetailsComponent implements OnInit, OnChanges {
         let feedback: MComponentFeedback = null;
         if (this.genericInformation && this.genericInformation.stackId && component) {
             feedback = new MComponentFeedback(
-                this.genericInformation.stackId,
-                type,
-                component.name,
-                null,
-                component.ecosystem
+                new MFeedbackTemplate(
+                    this.genericInformation.stackId,
+                    type,
+                    component.name,
+                    null,
+                    component.ecosystem
+                ),
+                this.genericInformation.baseUrl
             );
         }
         return feedback;
