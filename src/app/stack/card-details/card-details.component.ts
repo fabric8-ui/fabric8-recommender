@@ -327,11 +327,12 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                 licenseAnalysis.unknown_licenses.really_unknown.length > 0
             ) {
                 let reallyUnknown = licenseAnalysis.unknown_licenses.really_unknown;
-                reallyUnknown.forEach((unknown) => {
-                    if (unknown.package === component.name) {
+                let len: number = reallyUnknown.length;
+                for (let i = 0; i < len; ++ i) {
+                    if (reallyUnknown[i].package === component.name) {
                         return true;
                     }
-                });
+                }
             }
         }
         return false;
