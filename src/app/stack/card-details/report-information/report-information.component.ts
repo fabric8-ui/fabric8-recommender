@@ -39,6 +39,14 @@ export class ReportInformationComponent implements OnInit, OnChanges {
 
     public handleAccordion(componentDetail: MComponentDetails): void {
         this.closeAllButThis(componentDetail);
+        if (
+            (componentDetail.componentInformation && !componentDetail.componentInformation.needsExpansion) ||
+            (componentDetail.recommendationInformation && componentDetail.recommendationInformation.componentInformation &&
+            !componentDetail.recommendationInformation.componentInformation.needsExpansion)
+        ) {
+            return;
+        }
+
         if (componentDetail.componentInformation) {
             componentDetail.componentInformation.isOpen = !componentDetail.componentInformation.isOpen;
         }
