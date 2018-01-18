@@ -38,9 +38,14 @@ export class StackReportInShortComponent implements OnChanges {
     constructor(private stackAnalysisService: StackAnalysesService) {}
 
     ngOnChanges(): void {
-        if (this.stackUrl && this.stackUrl !== this.cache) {
+        this.rel();
+    }
+
+    public rel():void {console.log("rel is called");
+        if (this.stackUrl ) {//&& this.stackUrl !== this.cache
             this.cache = this.stackUrl;
             this.dataLoaded = false;
+            // this.progress = true;
             console.log('inshort component', this.stackUrl, this.gatewayConfig);
             this.stackAnalysisService
                 .getStackAnalyses(this.stackUrl, this.gatewayConfig)
@@ -51,6 +56,8 @@ export class StackReportInShortComponent implements OnChanges {
                         if (resultInformation) {
                             resultInformation.subscribe((response) => {
                                 this.result = response;
+                                this.progress = false;
+                                console.log('progress '+this.progress);
                                 this.buildReportInShort();
                             });
                         }
