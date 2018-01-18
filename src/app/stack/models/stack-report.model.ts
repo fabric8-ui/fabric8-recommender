@@ -40,9 +40,15 @@ export class ComponentInformationModel {
     replaces: any;
     reason: string;
     confidence_reason?: number;
-    security: Array<any>;
+    security: Array<SecurityInformationModel>;
     sentiment: SentimentModel;
     version: string;
+    topic_list: Array<string>;
+}
+
+export class SecurityInformationModel {
+    CVE: string;
+    CVSS: string;
 }
 
 export class LicenseAnalysisModel {
@@ -130,11 +136,16 @@ export class StackLicenseAnalysisModel {
     conflict_packages: Array<ConflictPackageModel> = [];
     unknown_licenses: UnknownLicensesModel;
     outlier_packages: Array<ReallyUnknownLicenseModel> = [];
+    recommendation_ready: boolean;
+    stack_license_conflict: boolean;
+    total_licenses: number;
+    unknown_dependencies: Array<any>;
+    unknown_dependencies_count: number;
 }
 export class UserStackInfoModel {
-    analyzed_dependencies: Array<any>;
+    dependencies: Array<any>;
     analyzed_dependencies_count: number;
-    dependencies: Array<ComponentInformationModel>;
+    analyzed_dependencies: Array<ComponentInformationModel>;
     distinct_licenses: Array<string>;
     ecosystem: string;
     license_analysis: StackLicenseAnalysisModel;

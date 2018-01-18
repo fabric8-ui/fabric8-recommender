@@ -1,18 +1,26 @@
 <div class="stack-report">
   <a class="stack-reports-btn" (click)="showStackModal($event)">{{displayName}}</a>
+  <pipleine-insights-details *ngIf="stack" [url]="stack" ></pipleine-insights-details>
   <modal #stackModule title="Stack report for {{appName}}, Build #{{buildNumber}}" modalClass="modal-lg modal-fullscreen modal-width-class" (onClose)="handleModalClose();" (onOpen)="init();">
-    <modal-header>
-        {{modalHeader}}
-    </modal-header>
     <modal-content>
       <div *ngIf="!error">
         <tabset *ngIf="dataLoaded">
             <tab *ngFor="let tabz of tabs"
-                [heading]="tabz.title"
                 (select)="tabSelection(tabz)"
+                (deselect)="tabDeSelection(tabz)"
                 (removed)="removeTabHandler(tabz)"
                 [customClass]="tabz.active ? 'active-menu-item' : 'inactive-menu'">
-                <accordion>
+                <ng-template tabHeading>
+                  <i *ngIf="tabz.hasWarning" class="pficon-warning-triangle-o"></i>
+                  <span [innerHtml]="tabz.title" style="margin-left: 5px"></span>
+                </ng-template>
+                <!-- Stack Report Design Revamp - BEGIN -->
+                <analytics-report-summary (onCardClick)="handleCardClick($event)" [report]="tabz.content"></analytics-report-summary>
+                <card-details [genericInformation]="genericInformation && genericInformation" *ngIf="cardDetails" [cardDetails]="cardDetails" [repoInfo]="repoInfo"></card-details>
+                <!-- Stack Report Design Revamp - END -->
+
+
+                <!--<accordion>
                   <accordion-group
                       [isOpen]="true"
                       [panelClass]="customClass"
@@ -25,7 +33,7 @@
                             [Components: <b>{{analysis && analysis.stackLevel}}</b>]
                           </div>
                         </div>
-                        <stack-level-information (changeFilter)="handleChangeFilter($event)" [outliers]="stackLevelOutliers" [userStack]="tabz && tabz.content && tabz.content.user_stack_info"></stack-level-information>
+                        <stack-level-information (changeFilter)="handleChangeFilter($event)" [outliers]="stackLevelOutliers" [userStack]="tabz && tabz.content && tabz.content.user_stack_info" (sendcveInfo) = "getcve($event)"></stack-level-information>
                   </accordion-group>
                   <accordion-group #grouped [isOpen]="true" [panelClass]="customClass">
                     <div accordion-heading>
@@ -53,9 +61,12 @@
                     </div>
                     <component-level-information [data]="repoInfo" [header]="companionLevel.header" [subHeader]="companionLevel.subHeader" [isCompanion]="true" [component]="companionLevelRecommendation"></component-level-information>
                   </accordion-group>
-                </accordion>
+                </accordion>-->
             </tab>
         </tabset>
+
+
+
       </div>
       <div *ngIf="!dataLoaded" class="pre-loader">
         <div class="pre-loader-spinner spinner spinner-lg"></div>

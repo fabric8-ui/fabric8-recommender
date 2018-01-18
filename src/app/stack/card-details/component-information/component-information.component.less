@@ -1,0 +1,119 @@
+@steelBlue: #2a9fd8;
+.analytics-component-information {
+    .recommendation-reason {
+        &:before {
+            content: '';
+            clear: both;
+            display: block;
+            float: none;
+        }
+        font-size: 10px;
+        color: #999;
+        cursor: pointer;
+    }
+    .active-card {
+        border: 1px solid @steelBlue;
+    }
+    .card-pf {
+        min-height: 75px;
+        margin: 10px 0;
+    }
+    .toggler {
+        cursor: pointer;
+        padding: 2px 5px;
+        font-size: 20px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+    }
+    .float-left {
+        float: left;
+    }
+    .float-right {
+        float: right;
+    }
+    .extra-small {
+        width: 20px;
+    }
+    .extra-medium {
+        width: 15%;
+    }
+    .small {
+        width: 10%;
+    }
+    .medium {
+        width: 25%;
+    }
+    .large {
+        width: 30%;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .indicator {
+        width: 15px;
+        height: 15px;
+        background: #ccc;
+        display: inline-block;
+        margin: 0 25px 0 0;
+        position: relative;
+        .pseudo-text-class {
+            color: #7e7e7e;
+            display: block;
+            position: absolute;
+            text-align: center;
+            bottom: -20px;
+            left: -7px;
+            font-size: 10px;
+        }
+
+        &.security {
+            &:after {
+                content: 'Security';
+                .pseudo-text-class;
+            }
+        }
+        &.usage {
+            &:after {
+                content: 'Usage';
+                .pseudo-text-class;
+            }
+        }
+        &.license {
+            &:after {
+                content: 'License';
+                .pseudo-text-class;
+            }
+        }
+
+        &.usage-outlier {
+            background: #ff6162;
+        }
+        &.license-issue {
+            background: #ff6162;
+        }
+        &.security-issue {
+            background: #f5a625;
+        }
+    }
+    .common-section {
+        padding-left: 5%;
+    }
+    .recommendation-section {
+        border-left: 1px solid #ccc;
+    }
+    .clear-float {
+        &:after {
+            content: '';
+            float: none;
+            clear: both;
+            display: block;
+        }
+    }
+    .action {
+        .not-created, .created {
+            cursor: pointer;
+            color: #2a9fd8;
+        }
+    }
+}
