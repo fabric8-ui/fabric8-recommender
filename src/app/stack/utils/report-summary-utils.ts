@@ -127,7 +127,8 @@ export class ReportSummaryUtils {
                     headerText: maxIssue.CVSS + ' / ' + 10,
                     value: Number(maxIssue.CVSS),
                     bgColor: Number(maxIssue.CVSS) >= 7 ? this.colors.security.warning : this.colors.security.moderate,
-                    footerText: 'No. of components with this CVSS Score: ' + totalComponentsWithMaxScore
+                    footerText: 'No. of components with this CVSS Score: ' + totalComponentsWithMaxScore,
+                    width: Number(maxIssue.CVSS) * 10
                 };
                 securityCard.reportSummaryContent.infoEntries.push(maxIssueEntry);
                 securityCard.reportSummaryTitle.notificationIcon = this.notification.warning.icon;
