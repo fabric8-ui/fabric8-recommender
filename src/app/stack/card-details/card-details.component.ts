@@ -271,6 +271,7 @@ export class CardDetailsComponent implements OnInit, OnChanges {
 
         let genericReport: MReportInformation = new MReportInformation(
             null,
+            null,
             'component',
             this.fillColumnHeaders(cardType, 1),
             componentDetails
@@ -278,13 +279,16 @@ export class CardDetailsComponent implements OnInit, OnChanges {
 
         switch (cardType) {
             case 'security':
+                genericReport.identifier = 'security';
                 genericReport.name = 'securityTab';
                 reportInformations.push(genericReport);
                 break;
             case 'insights':
+                genericReport.identifier = 'ins-usage';
                 genericReport.name = 'Usage Outlier Details';
                 reportInformations.push(genericReport);
                 reportInformations.push(new MReportInformation(
+                    'ins-companion',
                     'Companion Component Details',
                     'recommendation',
                     this.fillColumnHeaders(cardType, 2),
@@ -292,9 +296,11 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                 ));
                 break;
             case 'licenses':
+                genericReport.identifier = 'lic-conflicts';
                 genericReport.name = 'Conflicting License(s) details';
                 reportInformations.push(genericReport);
                 reportInformations.push(new MReportInformation(
+                    'lic-unknown',
                     'Unknown license(s) details',
                     'component',
                     this.fillColumnHeaders(cardType, 2),
@@ -302,9 +308,11 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                 ));
                 break;
             case 'compDetails':
+                genericReport.identifier = 'comp-analyzed';
                 genericReport.name = 'Analyzed component Details';
                 reportInformations.push(genericReport);
                 reportInformations.push(new MReportInformation(
+                    'comp-unknown',
                     'Unknown Component details',
                     'component',
                     this.fillColumnHeaders(cardType, 2),
