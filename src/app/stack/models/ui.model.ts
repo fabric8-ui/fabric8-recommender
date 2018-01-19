@@ -180,6 +180,7 @@ export class MComponentHeaderColumn {
 
 export class MReportInformation {
     constructor(
+        public identifier: string,
         public name: string,
         public type: string,
         public headers: Array<MComponentHeaderColumn>,

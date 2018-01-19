@@ -14,6 +14,8 @@ import { ReportInformationComponent } from './report-information.component';
 import { ToastNotificationComponent } from '../../toast-notification/toast-notification.component';
 import { AddWorkFlowService } from '../../stack-details/add-work-flow.service';
 
+import { NoDataComponent } from './no-data/no-data.component';
+
 import { ReportInformationModule } from './report-information.module';
 
 const components = [
@@ -21,7 +23,8 @@ const components = [
     ComponentInformationComponent,
     ComponentDetailsComponent,
     ReportInformationComponent,
-    ToastNotificationComponent
+    ToastNotificationComponent,
+    NoDataComponent
 ];
 
 const imports = [
