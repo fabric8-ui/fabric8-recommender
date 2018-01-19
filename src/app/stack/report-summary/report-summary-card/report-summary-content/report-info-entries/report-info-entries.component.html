@@ -1,8 +1,8 @@
 <div class="ana-summary-info">
     <div *ngIf="entry?.infoType === 'text'" class="ana-normal">
         <div class="row">
-            <div class="col-sm-9 info-key" [innerText]="entry?.infoText"></div>
-            <div class="col-sm-3 info-value" [innerText]="entry?.infoValue"></div>
+            <div class="col-sm-8 info-key" [innerText]="entry?.infoText"></div>
+            <div class="col-sm-4 info-value" [innerText]="entry?.infoValue"></div>
         </div>
     </div>
     <div class="ana-custom" [ngSwitch]="entry?.infoType">
