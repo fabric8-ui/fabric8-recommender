@@ -29,7 +29,7 @@ export class NoDataComponent implements OnChanges {
         },
         'lic-conflicts': {
             title: 'No license conflicts',
-            description: 'No component-level or stack-level conflicting licenses found in this stack'
+            description: 'OSIO Analytics could not find any conflicting licences in this stack'
         },
         'comp-analyzed': {
             title: 'No analyzed components',
@@ -41,7 +41,7 @@ export class NoDataComponent implements OnChanges {
         },
         'lic-unknown': {
             title: 'No unknown licenses',
-            description: 'No unknown licenses found in your stack components.'
+            description: 'OSIO Analytics could not find any unknown licences in this stack'
         },
         'comp-unknown': {
             title: 'No unknown components',
