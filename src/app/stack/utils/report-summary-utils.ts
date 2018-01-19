@@ -213,7 +213,7 @@ export class ReportSummaryUtils {
                 } else {
                     stackLicense.infoValue = 'None';
                     if (licenseAnalysis.status && licenseAnalysis.status.toLowerCase() === 'failure') {
-                        stackLicense.infoValue = 'Failure';
+                        stackLicense.infoValue = 'Unknown';
                     }
                 }
             } else {
