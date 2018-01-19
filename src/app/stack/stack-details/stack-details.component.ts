@@ -154,6 +154,13 @@ export class StackDetailsComponent implements OnChanges {
                 manifestinfo: tab.content.manifest_name,
                 licenseAnalysis: tab.content.user_stack_info.license_analysis
             };
+
+            // Select the first card by default
+            if (SaveState && SaveState.ELEMENTS && SaveState.ELEMENTS.length > 0) {
+                if (SaveState.ELEMENTS[currentIndex * 4]) {
+                    SaveState.ELEMENTS[currentIndex * 4].click();
+                }
+            }
         }
     }
 

@@ -51,7 +51,6 @@ export class NoDataComponent implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         let summary: any = changes['identifier'];
-        debugger;
         if (summary && summary['currentValue']) {
             this.identifier = <string>summary['currentValue'];
             this.paint();
@@ -61,7 +60,6 @@ export class NoDataComponent implements OnChanges {
     private paint() {
         if (this.identifier) {
             let configObject: any = this.TITLE_AND_DESCRIPTION[this.identifier];
-            debugger;
             if (configObject) {
                 this.title = configObject.title;
                 this.description = configObject.description;
