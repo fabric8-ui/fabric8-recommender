@@ -5,7 +5,7 @@ import { ComponentInformationComponent } from './component-information.component
 import { AddWorkFlowService } from '../../stack-details/add-work-flow.service';
 
 import { TooltipModule } from 'ngx-bootstrap';
-import { ToastNotificationComponent } from '../../toast-notification/toast-notification.component';
+import { ToastNotificationModule } from '../../toast-notification/toast-notification.module';
 import { ComponentSnippetComponent } from './component-snippet/component-snippet.component';
 
 import { ProgressMeterModule } from '../../utils/progress-meter/progress-meter.module';
@@ -83,10 +83,10 @@ describe ('ComponentInformationComponent', () => {
                 TooltipModule,
                 ProgressMeterModule,
                 ComponentFeedbackModule,
-                ComponentFeedbackModule
+                ComponentFeedbackModule,
+                ToastNotificationModule
             ],
             declarations: [
-                ToastNotificationComponent,
                 ComponentInformationComponent,
                 ComponentSnippetComponent
             ],
