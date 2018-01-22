@@ -192,11 +192,14 @@
     </div>
 </div>
 <div *ngIf="progress" class="error-class">
-        <div class="container-progress progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
-                <span>50%</span>
-            </div>
-        </div>
-        <h3>{{progress && progress.title}}</h3>
+        <!-- <div class="container-progress progress">
+             <div class="card-block"> -->
+               
+            <!-- </div>
+        </div> -->
+        <!-- <h3>{{progress && progress.title}}</h3> -->
+        <h1 class="pficon-ok"></h1>
+        <h3>Build is complete</h3>
+        <p class="reload"><a (click)="rel()">Click here</a> to view the summary</p>
     </div>
 </div>
