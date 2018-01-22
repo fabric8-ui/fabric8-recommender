@@ -180,7 +180,7 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                         progress,
                         new MComponentInformation(
                             companion.name,
-                            companion.version,
+                            '-----',
                             companion.latest_version,
                             security,
                             security !== null,
@@ -665,7 +665,7 @@ export class CardDetailsComponent implements OnInit, OnChanges {
                 securityDetails.progressReport = new MProgressMeter(
                     Number(maxIssue.CVSS) + '/10',
                     Number(maxIssue.CVSS),
-                    Number(maxIssue.CVSS) >= 7 ? '#ff6162' : 'ORANGE',
+                    Number(maxIssue.CVSS) >= 7 ? '#d1011c' : 'ORANGE',
                     '',
                     Number(maxIssue.CVSS) * 10
                 );
