@@ -1,0 +1,37 @@
+.flexMixin() {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+.analytics-summary-card {
+    cursor: pointer;
+    .flexMixin();
+    align-items: stretch;
+    .card-pf {
+        padding: 10px 20px;
+    }
+    &.highlight {
+        .card-pf {
+            border-bottom: 4px solid #39a5dc;
+            box-shadow: 0 0 15px #777;
+            &:after {
+                content: '';
+                width: 30px;
+                height: 30px;
+                display: block;
+                position: absolute;
+                border: #39a5dc 2px solid;
+                bottom: -15px;
+                left: 45%;
+                transform: rotate(45deg);
+                border-bottom: 0;
+                border-right: 0;
+                background: #fff;
+                z-index: 9;
+            }
+        }
+    }
+}

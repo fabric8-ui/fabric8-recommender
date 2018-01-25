@@ -1,6 +1,67 @@
 @import (reference) '../../../assets/stylesheets/shared/main.less';
 
+@headerBg: #030303;
+@headerTextColor: #fff;
+@steelBlue: #39a5dc;
+
 .stack-report {
+
+
+  /** Changes for the stack report design revamp latest */
+  .modal-header {
+    background-color: @headerBg;
+    color: @headerTextColor;
+    .close {
+        font-size: 50px;
+        padding: 0;
+        position: absolute;
+        right: 10px;
+        top: 0;
+        font-weight: 100;
+        color: @headerTextColor;
+    }
+  }
+  .modal-body {
+    padding: unset;
+
+    .tab-container {
+      .nav-tabs {
+        border: none;
+        background: @headerBg;
+        color: @headerTextColor;
+        .active-menu-item {
+          .nav-link {
+            &.active {
+              background-color: inherit;
+              color: inherit;
+              border: none;
+              box-shadow: inset -10px -14px 0px -10px @steelBlue;
+            }
+          }
+        }
+        li {
+          a {
+            border: 0;
+            &:hover {
+              border: 0;
+              color: inherit;
+            }
+          }
+        }
+      }
+      .icon-moderate:before {
+        color: #f5a625;
+      }
+      .icon-severe:before {
+        color: #d1011c;
+      }
+    }
+  }
+  /** Changes for the stack report design revamp latest */
+
+
+
+
   .stack-reports-btn { cursor: pointer; }
   .modal-width-class { width: 95%; }
   .accordion-indicator {

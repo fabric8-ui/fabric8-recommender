@@ -5,6 +5,19 @@ import { StackAnalysesService } from '../stack-analyses.service';
 import { getStackReportModel } from '../utils/stack-api-utils';
 import { StackReportModel, ResultInformationModel, UserStackInfoModel,
     ComponentInformationModel, RecommendationsModel } from '../models/stack-report.model';
+import { ReportSummaryUtils } from '../utils/report-summary-utils';
+
+/**
+ * New Stack Report Revamp - Begin
+ */
+import {
+    MCardDetails,
+    MGenericStackInformation
+} from '../models/ui.model';
+import { SaveState } from '../utils/SaveState';
+/**
+ * New Stack Report Revamp - End
+ */
 
 @Component({
     selector: 'stack-details',
@@ -22,9 +35,19 @@ export class StackDetailsComponent implements OnChanges {
     @Input() buildNumber;
     @Input() appName;
     @Input() stackResponse;
+    @Input() showFlags;
 
     @ViewChild('stackModule') modalStackModule: any;
 
+
+    /**
+     * New Stack Report Revamp - Begin
+     */
+     public cardDetails: any = {};
+     public genericInformation: MGenericStackInformation = null;
+    /**
+     * New Stack Report Revamp - End
+     */
     public errorMessage: any = {};
     public cache: string = '';
     public cacheResponse: any;
@@ -44,15 +67,30 @@ export class StackDetailsComponent implements OnChanges {
     public customClass: string = 'accordion-custom';
     public analysis: any = {};
 
-
     public feedbackConfig: any = {};
 
     public tabs: Array<any> = [];
+    public showF: boolean = true;
 
     private userStackInformationArray: Array<UserStackInfoModel> = [];
     private totalManifests: number;
 
     private stackId: string;
+    private reportSummaryUtils = new ReportSummaryUtils();
+
+    /**
+     * New Stack Report Revamp - Begin
+     */
+    public handleCardClick(cardDetails: any): void {
+        this.genericInformation = new MGenericStackInformation(
+            this.stackId,
+            this.getBaseUrl(this.stack)
+        );
+        this.cardDetails = cardDetails;
+    }
+    /**
+     * New Stack Report Revamp - End
+     */
 
     public showStackModal(event: Event): void {
         event.preventDefault();
@@ -66,6 +104,7 @@ export class StackDetailsComponent implements OnChanges {
     public handleModalClose(): void {
         this.resetFields();
     }
+
 
     public tabSelection(tab: any): void {
         if (tab) {
@@ -116,6 +155,19 @@ export class StackDetailsComponent implements OnChanges {
                 manifestinfo: tab.content.manifest_name,
                 licenseAnalysis: tab.content.user_stack_info.license_analysis
             };
+
+            // Select the first card by default
+            if (SaveState && SaveState.ELEMENTS && SaveState.ELEMENTS.length > 0) {
+                if (SaveState.ELEMENTS[currentIndex * 4]) {
+                    SaveState.ELEMENTS[currentIndex * 4].click();
+                }
+            }
+        }
+    }
+
+    public tabDeSelection(tab: any): void {
+        if (tab) {
+            tab['active'] = false;
         }
     }
 
@@ -140,6 +192,9 @@ export class StackDetailsComponent implements OnChanges {
             };
             this.displayName = this.displayName || 'Stack Report';
         }
+        if (this.showFlags === 'false') {
+            this.showF =false;
+        }
     }
 
     public handleChangeFilter(filterBy: any): void {
@@ -147,6 +202,21 @@ export class StackDetailsComponent implements OnChanges {
     }
 
     constructor(private stackAnalysisService: StackAnalysesService) {}
+    /**
+     * New Revamp - Begin
+     * https://recommender.api.openshift.io/api/v1/stack-analyses/
+     */
+    private getBaseUrl(url: string): string {
+        if (url && url !== '') {
+            let splitter: string = 'api/v1';
+            return url.indexOf(splitter) !== -1 ? url.split(splitter)[0] : '';
+        }
+        return '';
+    }
+
+    /**
+     * New Revamp - End
+     */
 
     private handleError(error: any): void {
         this.errorMessage = error;
@@ -181,6 +251,7 @@ export class StackDetailsComponent implements OnChanges {
         this.componentLevelInformation = {};
         this.companionLevelRecommendation = {};
         this.cacheResponse = {};
+        SaveState.ELEMENTS = [];
         // this.dataLoaded = false;
     }
 
@@ -195,11 +266,15 @@ export class StackDetailsComponent implements OnChanges {
                 if (this.totalManifests > 0) {
                     this.userStackInformationArray = result.map((r) => r.user_stack_info);
                     result.forEach((r, index) => {
-                        this.tabs.push({
+                        let warning: any = this.ifManifestHasWarning(r);
+                        let tab = {
                             title: r.manifest_file_path,
                             content: r,
-                            index: index
-                        });
+                            index: index,
+                            hasWarning: warning.has,
+                            severity: warning.severity
+                        };
+                        this.tabs.push(tab);
                         this.recommendationsArray.push(r.recommendation);
                     });
                     this.modalHeader = 'Updated just now';
@@ -207,14 +282,13 @@ export class StackDetailsComponent implements OnChanges {
                     this.tabSelection(this.tabs[0]);
                 }
             });
-        } else if(data && data.hasOwnProperty('error')){
+        } else if (data && data.hasOwnProperty('error')) {
             this.handleError({
-                message: "Analysis for your stack is in progress...",
+                message: 'Analysis for your stack is in progress ...',
                 code: data.statusCode,
                 title: 'Updating ...'
             });
-        }
-        else {
+        } else {
             this.handleError({
                 message: data.error,
                 code: data.statusCode,
@@ -223,9 +297,19 @@ export class StackDetailsComponent implements OnChanges {
         }
     }
 
+    private ifManifestHasWarning(manifest: ResultInformationModel): any {
+        let securityInfo = this.reportSummaryUtils.getSecurityReportCard(manifest.user_stack_info);
+        let isSecurityWarning = securityInfo.hasWarning;
+        let isInsightsWarning = this.reportSummaryUtils.getInsightsReportCard(manifest.recommendation).hasWarning;
+        let isLicenseWarning = this.reportSummaryUtils.getLicensesReportCard(manifest.user_stack_info).hasWarning;
+        return {
+            has: isSecurityWarning || isInsightsWarning || isLicenseWarning,
+            severity: (isSecurityWarning && securityInfo.severity) || 2
+        };
+    }
+
     private init(): void {
         if (this.stackResponse && this.cacheResponse !== this.stackResponse) {
-            console.log('stack details', this.stackResponse);
             this.cacheResponse = this.stackResponse;
             // Change this to some other logic
             setTimeout(() => {

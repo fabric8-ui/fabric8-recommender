@@ -1,0 +1,83 @@
+<div class="analytics-snippet-information">
+    <h4>Details of the component: <span class="component-name" [innerText]="component?.name"></span></h4>
+    <div [ngClass]="{'component-version left': true, 'normal-version-box': view === 'split', 'small-version-box': view === 'normal'}">
+        <div class="col-xs-6">
+            <p class="info-head">Current Version</p>
+            <p [innerText]="component?.currentVersion"></p>
+        </div>
+        <div class="col-xs-6">
+            <p class="info-head">Latest Version</p>
+            <p [innerText]="component?.latestVersion"></p>
+        </div>
+    </div>
+    <div *ngIf="view === 'normal'" class="github-osio-box">
+        <div class="github left">
+            <div class="box-header">
+                Github Statistics:
+            </div>
+            <div class="info-container left">
+                <div *ngFor="let github of githubEntries" class="side">
+                    <p class="info-head" [innerText]="github.key"></p>
+                    <p [innerText]="github.value || '-----'"></p>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="showOSIOUsage" class="osio put-bar left">
+            <div class="box-header">
+                OSIO Statistics:
+            </div>
+            <div class="info-container left">
+                <div class="side">
+                    <p class="info-head" [innerText]="'OSIO Usage'"></p>
+                    <p [innerText]="component?.osio?.usage || '-----'"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="common-table component-licenses">
+        <div class="common-wrapper">
+            <span class="info-head">License(s) used: </span>
+            <span *ngIf="component?.licenses?.length > 0" class="common-container license-container">
+                <span [innerText]="license" *ngFor="let license of component?.licenses"></span>
+            </span>
+            <span *ngIf="component?.licenses?.length === 0" class="common-container license-container">
+                -----
+            </span>
+        </div>
+    </div>
+    <div class="common-table component-tags">
+        <div class="common-wrapper">
+            <span class="info-head">Tags:</span> 
+            <span *ngIf="component?.crowdSourcing?.tags && component?.crowdSourcing?.tags?.length > 0" class="common-container tags-container">
+                <span [innerText]="tag" *ngFor="let tag of component?.crowdSourcing?.tags"></span>
+            </span>
+            <span *ngIf="!component?.crowdSourcing?.tags || component?.crowdSourcing?.tags?.length === 0" class="common-container tags-container">
+                -----
+            </span>
+        </div>
+    </div>
+    <div *ngIf="view === 'split'" class="github-osio-box">
+        <div class="github left">
+            <div class="box-header">
+                Github Statistics:
+            </div>
+            <div class="info-container left">
+                <div *ngFor="let github of githubEntries" class="side">
+                    <p class="info-head" [innerText]="github.key"></p>
+                    <p [innerText]="github.value || '-----'"></p>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="showOSIOUsage" class="osio left">
+            <div class="box-header">
+                OSIO Statistics:
+            </div>
+            <div class="info-container left">
+                <div class="side">
+                    <p class="info-head" [innerText]="'OSIO Usage'"></p>
+                    <p [innerText]="component?.osio?.usage || '-----'"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

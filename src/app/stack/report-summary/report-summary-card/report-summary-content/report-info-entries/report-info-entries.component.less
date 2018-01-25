@@ -1,0 +1,26 @@
+.ana-summary-info {
+    font-size: 15px;
+    font-weight: 100;
+    .ana-normal {
+        .info-key {
+            padding: 0 10px;
+        }
+        .info-value {
+            color: #2a9fd8;
+            font-weight: 500;
+            padding: 0 10px;
+            text-align: right;
+        }
+        &:after {
+            content: '';
+            display: block;
+            float: none;
+            clear: both;
+        }
+    }
+    .ana-custom {
+        .info-key, .info-value {
+            display: block;
+        }
+    }
+}
