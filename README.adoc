@@ -23,7 +23,7 @@ $ export NODE_ENV=production # <3>
 <2> Production mode for deploying the application
 ```
 
-Once you're done setting the environment, you can proceed with the next step(s)
+Once you're done setting the environment, you can proceed with the next step(s) 
 
 NOTE: If you're directly trying to run the app in dev mode, you can skip this
 step, as *`NODE_ENV`* is treated as `"development"` by default.
