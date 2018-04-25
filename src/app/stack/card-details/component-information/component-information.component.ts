@@ -129,8 +129,10 @@ export class ComponentInformationComponent implements OnInit, OnChanges {
         message += '\n\n **Line Number:**' + codebase['linenumber'];
         let item: any = {
             title: titleHdr,
-            description: message,
-            markup: 'Markdown',
+            description: {
+              "content": message,
+              "markup": 'Markdown'
+            },
             codebase: codebase,
             key: key
         };
