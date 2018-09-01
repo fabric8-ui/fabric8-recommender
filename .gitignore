@@ -43,18 +43,27 @@ npm-debug.log
 /typings/
 /tsd_typings/
 
-# Dist #
+# compiled output
+/build
+/build-aot
 /dist
+/dist-demo
 /dist-watch
+/dist/**
 /public/__build__/
 /src/*/__build__/
 /__build__/**
 /public/dist/
 /src/*/dist/
-/dist/**
 /.awcache
 .webpack.json
-/dist-watch
+
+# Build generated files
+src/app/**/*.css
+/compiled
+*.metadata.json
+*.ngFactory.ts
+package-lock.json
 
 # Doc #
 /doc/
