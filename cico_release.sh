@@ -24,6 +24,16 @@ function release() {
     # create_merge_PR
 }
 
+function set_branch_to_master() {
+  # Set the branch as it defaults to the branch 'origin/master'
+  git checkout master
+  export GIT_BRANCH=master
+  # check where we are
+  git branch -va
+  git remote -v
+}
+
+
 # This function raises a PR against fabric8-npm-dependencies
 function create_merge_PR {
     # Fetch latest tags
@@ -84,7 +94,7 @@ function create_merge_PR {
 }
 
 # Updates fabric8-recommender's version in package.json file
-function fabric8-stack-analysis-ui {
+function updatePackageJSONVersion {
     local f="package.json"
     local p="fabric8-stack-analysis-ui"
     local v=$1
