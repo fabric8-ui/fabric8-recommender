@@ -25,7 +25,9 @@
     "noUnusedParameters": false,
     "outDir": "build-aot",
     "paths": {
+      "@angular/common": ["node_modules/@angular/common"],
       "@angular/core": ["node_modules/@angular/core"],
+      "@angular/forms": ["node_modules/@angular/forms"],
       "@angular/http": ["node_modules/@angular/http"],
       "@angular/router": ["node_modules/@angular/router"],
       "rxjs/*": ["node_modules/rxjs/*"]
