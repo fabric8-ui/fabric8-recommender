@@ -1,0 +1,51 @@
+<div class="stack-report-inshort">
+  <div *ngIf="!error || !progress">
+    <tabset *ngIf="tabs && tabs.length > 0">
+      <tab *ngFor="let tabz of tabs" (select)="tabSelection(tabz)"
+        [customClass]="tabz.active ? 'active-menu-item' : 'inactive-menu'">
+        <ng-template tabHeading>
+          <i *ngIf="tabz.hasWarning" [ngClass]="{'pficon-warning-triangle-o': true, 'icon-severe': tabz.severity === 1, 'icon-moderate': tabz.severity === 2}"></i>
+          <span [innerHtml]="tabz.title" style="margin-left: 5px"></span>
+        </ng-template>
+        <!-- Stack Report Design Revamp - BEGIN -->
+        <div class="row info-row">
+          <div class="col-sm-7">
+            Dependencies: [
+            <b>Total: {{stackLevel && stackLevel.dependencies && stackLevel.dependencies.length}}</b> |
+            <b>Analyzed: {{stackLevel && stackLevel.analyzed_dependencies && stackLevel.analyzed_dependencies.length}}</b> |
+            <b>Unknown: {{stackLevel && stackLevel.unknown_dependencies && stackLevel.unknown_dependencies.length}}</b>]
+          </div>
+          <div class="col-sm-5">
+            <stack-details *ngIf="result" class="report-link" [showFlags]="'false'" [buildNumber]="buildNumber" [appName]="appName" [displayName]="'View complete stack report'"
+              [repoInfo]="repoInfo" [stackResponse]="result && result" [gatewayConfig]="gatewayConfig && gatewayConfig" [stack]="stackUrl"></stack-details>
+          </div>
+        </div>
+        <analytics-report-summary [report]="tabz.content" [isFromShortReport]="'true'" (onCardClick)="handleCardClick($event)"></analytics-report-summary>
+        <!-- Stack Report Design Revamp - END -->
+      </tab>
+    </tabset>
+    <div *ngIf="!dataLoaded" class="pre-loader">
+      <div class="pre-loader-spinner spinner spinner-lg"></div>
+    </div>
+  </div>
+  <div *ngIf="error" class="error-class">
+    <div class="f8-blank-slate-card">
+      <div class="f8-blank-slate-icon">
+        <i class="pficon pficon-warning-triangle-o"></i>
+      </div>
+      <h3>{{error && error.title}}</h3>
+      <p>{{error && error.detail}}</p>
+      <p>Switch to the Pipelines view to restart the pipeline:
+        <b>{{pipeline}}</b>
+      </p>
+    </div>
+  </div>
+  <div *ngIf="progress" class="error-class">
+    <div class="container-progress progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+        <span>50%</span>
+      </div>
+    </div>
+    <h3>{{progress && progress.title}}</h3>
+  </div>
+</div>
